@@ -18,3 +18,5 @@ evenList n lst = if(n==0)
 
 
 
+main = do
+        print ( evenList 20 [] )

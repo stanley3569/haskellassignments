@@ -28,7 +28,7 @@ evenCheck :: Int -> Bool
 evenCheck n = n `mod` 2 == 0
 
 sumEvenNumbers ::[Int] -> Int
-sumEvenNumbers x = sum (evenCheck x)
+sumEvenNumbers x = sum (filter evenCheck x)
 
 
 
