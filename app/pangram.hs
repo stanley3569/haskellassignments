@@ -2,18 +2,30 @@ import Data.Char
 import Data.List 
 
 
-isPangram :: String -> String
-isPangram xs = (delete ['a'..'z'] xs)
 
 --isPangram :: String -> Bool
 --isPangram xs =all (`elem` xs) ['a'..'z']    --working
 
+
+
+
+
+
+isPangram :: String -> Bool
+isPangram xs = if( (checkPangram xs ['a'..'z']) == "" )
+                  then True
+               else False
+
+
+
 fixedText :: String -> String
-fixedText xs = map toLower xs
+fixedText xs = (map toLower xs)
 
+validatePangram :: String -> Bool
+validatePangram xs = isPangram(fixedText xs)
 
---'a','b','c'
 
 main = do
-    print (isPangram (fixedText "The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Lay Dog ---missing last character of alphabets"))
-    print (isPangram (fixedText "The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Layz Dog --all alpphabets are present"))
+    print (validatePangram ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Lay Dog ---missing last character of alphabets")     )
+    print (validatePangram ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Layz Dog --all alpphabets are present"))
+    print (validatePangram ("BCDEFGHIJKLMNOPQURSTUVWXYZZZZZZAAAAA"))

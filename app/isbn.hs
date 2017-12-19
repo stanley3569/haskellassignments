@@ -1,32 +1,46 @@
 import Data.Char
 
-
 removeHypen :: String -> String
-removeHypen x = isValidIsbn (filter (/='-') x)
+removeHypen x =(isValidIsbn (filter (/='-') x))
+
 
 isValidIsbn :: String -> String
 isValidIsbn x = if( length x == 10 ) 
-                      then x 
-               else ""
+                      then checkX (x)
+                else "1234567890"
 
+checkX :: String -> String
+checkX xs =     if( (last(xs) )=='x')
+                    then init(xs)               
+                else if ( (last(xs))>='a' || (last(xs))>='A')
+                    then init(xs) ++ ['0']
+                else xs
 
 
 changeToInt :: String -> [Int]
-changeToInt xs =    ( (map digitToInt xs) )
---zipWith(*) [1..10]
-
+changeToInt xs =    if (length xs == 10)
+                        then ( (map digitToInt xs) )
+                    else ( (map digitToInt xs) ++ [10] )
+                                                
 calculateIsbn :: [Int] -> [Int]
 calculateIsbn xs = (zipWith(*) [10,9..1] xs) 
 
 checkIsbn :: [Int] -> Bool
 checkIsbn xs = ( (sum (calculateIsbn xs)) `mod` 11 == 0 ) 
---checkIsbn xs = ( (sum (changeToInt xs)) `mod` 11 == 0 )         --(zipWith(*) [10,9..1] xs) 
-
-
+                                            
+validateIsbn :: String -> Bool
+validateIsbn xs = (checkIsbn (changeToInt(removeHypen xs)) )
 
 main = do
-    print   (checkIsbn (changeToInt(removeHypen "3-598-21508-8")) )                 --true
-    print   (checkIsbn (changeToInt(removeHypen "3-598-21508-9")) )             --false
-
-
-    --print   (removeHypen "3-423423-42822-22")
+  print (validateIsbn "3-598-21508-8")            --true
+  print (validateIsbn "3662392003")              --true
+  print (validateIsbn"3-598-21507-xx")          --false
+  print (validateIsbn "3-598-21508-9")            --false
+  print (validateIsbn "3-598-21508-111")           --false
+  print (validateIsbn "3598215088")                --true
+  print (validateIsbn "3598a15088")                --false
+  print (validateIsbn "3-598-21507-10")            --false
+  print (validateIsbn "3-598-21507-x")             --true
+  print (validateIsbn "3-423423-42822-22")         --false 
+  print (validateIsbn "3-598-21507-A")             --false
+  print (validateIsbn "3-598-21507-S")             --false
