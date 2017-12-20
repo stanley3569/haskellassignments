@@ -9,6 +9,9 @@ import Data.List
 
 
 
+checkPangram :: String -> String -> String
+checkPangram [xs] x = delete xs x
+checkPangram xs x = (  delete (head xs) (checkPangram (tail xs) x)   )
 
 
 isPangram :: String -> Bool

@@ -44,3 +44,6 @@ main = do
   print (validateIsbn "3-423423-42822-22")         --false 
   print (validateIsbn "3-598-21507-A")             --false
   print (validateIsbn "3-598-21507-S")             --false
+  print (validateIsbn "123-45")                      --false
+
+  
