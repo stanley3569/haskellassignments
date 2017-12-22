@@ -1,5 +1,3 @@
-import Data.List
-import Data.Char
 
 withoutSpaces :: String -> String
 withoutSpaces xs = (filter (/=' ') xs)
