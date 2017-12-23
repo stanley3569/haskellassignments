@@ -1,6 +1,6 @@
 import Data.Char
 import Data.List
-
+ 
 
 main = do
     print  ( map (\x -> toUpper x) "abc" )
