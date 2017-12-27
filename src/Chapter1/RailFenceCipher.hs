@@ -15,10 +15,11 @@ encodeMessage inputString rail1 rail2 rail3 currentRail movementDirection = if((
                                                                                       else encodeMessage (tail inputString) rail1 rail2 (rail3++[(head inputString)]) (currentRail-1) 2
                                                                             else if((movementDirection ==2) && (inputString /= "") )
                                                                                 then encodeMessage (tail inputString) rail1 (rail2++[(head inputString)]) rail3 (currentRail-1) 1
-                                                                            else codeMessage rail1 rail2 rail3
+                                                                            else rail1++rail2++rail3
+                                                                                --else codeMessage rail1 rail2 rail3
 
-codeMessage :: String -> String -> String -> String
-codeMessage rail1 rail2 rail3 = (rail1 ++ rail2 ++ rail3 )
+--codeMessage :: String -> String -> String -> String
+--codeMessage rail1 rail2 rail3 = (rail1 ++ rail2 ++ rail3 )
 
 
 

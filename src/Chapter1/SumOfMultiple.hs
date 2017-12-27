@@ -1,4 +1,6 @@
 module Chapter1.SumOfMultiple where
+
+sumofmultiple :: Int -> Int
 sumofmultiple x = if(x==0)
                     then 0
                 else if(x `mod` 3 ==0 || x `mod` 5 ==0)
