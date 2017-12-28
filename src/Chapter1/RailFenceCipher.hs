@@ -6,14 +6,14 @@ withoutSpaces xs = (filter (/=' ') xs)
 
 
 encodeMessage :: String -> String -> String -> String -> Int -> Int -> String 
-encodeMessage inputString rail1 rail2 rail3 currentRail movementDirection = if((movementDirection == 1) && (inputString /= "") )
+encodeMessage inputString rail1 rail2 rail3 currentRail movementDirection = if((movementDirection == 1) && (inputString/="") )
                                                                                 then  
                                                                                       if(currentRail == 1)
                                                                                         then encodeMessage (tail inputString) (rail1++[(head inputString)]) rail2 rail3 (currentRail+1) 1
                                                                                       else if(currentRail ==2)
                                                                                         then encodeMessage (tail inputString) rail1 (rail2++[(head inputString)]) rail3 (currentRail+1) 1
                                                                                       else encodeMessage (tail inputString) rail1 rail2 (rail3++[(head inputString)]) (currentRail-1) 2
-                                                                            else if((movementDirection ==2) && (inputString /= "") )
+                                                                            else if((movementDirection ==2)  && (inputString/="") )
                                                                                 then encodeMessage (tail inputString) rail1 (rail2++[(head inputString)]) rail3 (currentRail-1) 1
                                                                             else rail1++rail2++rail3
                                                                                 --else codeMessage rail1 rail2 rail3
@@ -25,6 +25,7 @@ encodeMessage inputString rail1 rail2 rail3 currentRail movementDirection = if((
 
 
 main = do
-  print ( encodeMessage (withoutSpaces "WE ARE DISCOVERED FLEE AT ONCE") [] [] [] 1 1)
-
-  print ( encodeMessage (withoutSpaces "helloworld") [] [] [] 1 1)
+  print ( encodeMessage (withoutSpaces "WE ARE DISCOVERED FLEE AT ONCE") [] [] [] 1 1)           --WECRLTEERDSOEEFEAOCAIVDEN
+  print ( encodeMessage (withoutSpaces "helloworld") [] [] [] 1 1)                               --holelwrdlo
+  print ( encodeMessage (withoutSpaces "hello") [] [] [] 1 1)                                    --hoell
+  print ( encodeMessage (withoutSpaces "1234567890") [] [] [] 1 1)                               --1592468037
