@@ -11,13 +11,17 @@ import Data.List
 
 
 
+--checkPangram :: String -> String -> String
+--checkPangram [xs] x = delete xs x
+--checkPangram xs x = (  delete (head xs) (checkPangram (tail xs) x)   )
 checkPangram :: String -> String -> String
-checkPangram [xs] x = delete xs x
-checkPangram xs x = (  delete (head xs) (checkPangram (tail xs) x)   )
+checkPangram x y = if (length x) == 1
+                        then delete (head x) y
+                    else delete (head x) (checkPangram (tail x) y)
 
 
 isPangram :: String -> Bool
-isPangram xs = if( (checkPangram xs ['a'..'z']) == "" )
+isPangram xs = if (checkPangram xs ['a'..'z']) == ""
                   then True
                else False
 
