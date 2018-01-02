@@ -36,4 +36,4 @@ groupNamesByAllAlphabets names =
 
 
 main = do
-    print(groupNamesByAllAlphabets ["rooney","baines","ashley","vidic","aguero","vardy","hazard"])
+    print(groupNamesByAllAlphabets ["rooney","baines","ashley","vidic","aguero","vardy","hazard","Alexis"])
