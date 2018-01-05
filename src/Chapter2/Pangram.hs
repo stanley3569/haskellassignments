@@ -27,6 +27,18 @@ pangram2 xs =(not) (any (False==) (map (\ alpha ->(any (alpha ==) (map toLower x
 
 
 --main = do
-  --  print (checkPangram1 ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Lay Dog ---missing last character of alphabets")     )
-  --  print (checkPangram1 ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Layz Dog --all alpphabets are present"))
-  --  print (checkPangram1 ("BCDEFGHIJKLMNOPQURSTUVWXYZZZZZZAAAAA"))
+--    print (pangram2 ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Lay Dog ---missing last character of alphabets")     )
+--    print (pangram2 ("The Quick dfdss %&*^#()Brown Fox_+Jumps Over 1 2 3 The Layz Dog --all alpphabets are present"))
+--    print (pangram2 ("BCDEFGHIJKLMNOPQURSTUVWXYZZZZZZAAAAA"))
+
+
+--pangram3 :: String -> Bool
+--pangram3 xs = any(\c -> checkPangram2 c) (map toLower xs)
+
+--checkPangram2 :: Char -> Bool
+--checkPangram2 c = (elem c ['a'..'z'])
+
+--pangram3 :: String -> Bool
+--pangram3 xs = (foldl'(\ alpha -> (any (alpha ==) (map toLower xs)) ) ['a'..'z'] ) 
+
+--(map (\ alpha ->(any (alpha ==) (map toLower xs))) ['a'..'z'])

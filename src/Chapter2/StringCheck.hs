@@ -16,5 +16,5 @@
  --                               else False 
 
 
- stringCheck1 :: String -> String -> Bool
- stringCheck1 string1 subString = all (`elem` string1) subString
+ charactersCheck1 :: String -> String -> Bool
+ charactersCheck1 string1 string2 = all (`elem` string1) string2
