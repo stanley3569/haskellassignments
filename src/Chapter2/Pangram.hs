@@ -37,8 +37,3 @@ pangram2 xs =(not) (any (False==) (map (\ alpha ->(any (alpha ==) (map toLower x
 
 --checkPangram2 :: Char -> Bool
 --checkPangram2 c = (elem c ['a'..'z'])
-
---pangram3 :: String -> Bool
---pangram3 xs = (foldl'(\ alpha -> (any (alpha ==) (map toLower xs)) ) ['a'..'z'] ) 
-
---(map (\ alpha ->(any (alpha ==) (map toLower xs))) ['a'..'z'])

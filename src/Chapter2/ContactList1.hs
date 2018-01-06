@@ -1,39 +1,27 @@
 
-module ContactList where
+module Chapter2.ContactList1 where
     
-    import Data.Char (toLower)
-    import Data.List (foldl')
+    import Data.Char
+    import Data.List 
     
-    --groupNamesByAlphabet :: [String] -> (Char, [String])
-    --groupNamesByAlphabet names =
+
     
-    groupNamesByAlphabet :: Char -> [String] -> (Char, [String])
-    groupNamesByAlphabet alpha names =
-      foldl'   
-        -- the lambda
-        (\ (alphabet, collectedNames) name ->
-            if (length name > 0) && (toLower (head name) == (toLower alphabet))
-                then (alphabet, collectedNames ++ [name])
-            else (alphabet, collectedNames)
-        )
     
-        -- the initial value
-        --('a', [])
-        (alpha,[])
-    
-        -- the list
-        names
-    
+    groupAlpha :: [String] -> [[String]]
+    groupAlpha names = groupBy (\x y-> (toLower(head x)==toLower(head y))) (sort (names) )
     
     groupNamesByAllAlphabets :: [String] -> [(Char, [String])]
-    groupNamesByAllAlphabets names = 
-        filter
+    groupNamesByAllAlphabets names = foldl'(\contactList nameHead -> contactList++[(head (head nameHead), (nameHead) )]) [] (groupAlpha (names) )
+        
+    
+    
+        --filter
         
             -- the filter condition -- notice how it's destructuring the tuple...
-            (\ (alpha, collectedNames) -> length (collectedNames) > 0)
-            (map (\alphabet -> groupNamesByAlphabet alphabet names) "abcdefghijklmnopqrstuvwxyz")
+           -- (\ (alpha, collectedNames) -> length (collectedNames) > 0)
+           -- (map (\alphabet -> groupNamesByAlphabet alphabet names) "abcdefghijklmnopqrstuvwxyz")
     
     
     
-    main = do
-        print(groupNamesByAllAlphabets ["rooney","baines","ashley","vidic","aguero","vardy","hazard","Alexis"])
+    --main = do
+     --   print(groupNamesByAllAlphabets ["rooney","baines","ashley","vidic","aguero","vardy","hazard","alexis"])
