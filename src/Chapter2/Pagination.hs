@@ -26,6 +26,8 @@ pageNumber startPage centerPage endPage= (foldl' (\xs x -> xs ++ " | "++ (show x
 
 
 
+
+
 checkStartPage :: Int -> Int
 checkStartPage value = if(value<1)
                             then 1

@@ -36,4 +36,4 @@ pangram2 xs =(not) (any (False==) (map (\ alpha ->(any (alpha ==) (map toLower x
 --pangram3 xs = any(\c -> checkPangram2 c) (map toLower xs)
 
 --checkPangram2 :: Char -> Bool
---checkPangram2 c = (elem c ['a'..'z'])
+--checkPangram2 c = (elem c ['a'..'z']) 

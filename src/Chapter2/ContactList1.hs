@@ -13,7 +13,7 @@ module Chapter2.ContactList1 where
     groupNamesByAllAlphabets :: [String] -> [(Char, [String])]
     groupNamesByAllAlphabets names = foldl'(\contactList nameHead -> contactList++[(head (head nameHead), (nameHead) )]) [] (groupAlpha (names) )
         
-    
+     
     
         --filter
         

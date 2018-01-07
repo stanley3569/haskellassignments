@@ -27,19 +27,12 @@ validIsbn xs = (checkIsbn xs) && ( sum( (zipWith(*) [10,9..1] (map (\c -> (digit
 --calculateIsbn xs = (zipWith(*) [10,9..1] xs) 
 
 
-
+ 
 --convertX :: String -> String
 --convertX xs = 
 
 --validIsbn :: String -> Bool
 --validIsbn xs =isbn xs && (all (\c -> c `elem` ['0','1','2','3','4','5','6','7','8','9','X']) (removeHypen xs) ) 
-
-
-
-
-
-
-
 
 
 
