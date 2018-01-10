@@ -13,5 +13,5 @@ evenList n = foldl' (\ evenNumber n -> if(n `mod` 2 == 0)
 evenList1 :: Int -> [Int]
 --evenList1 n = foldl' (\ evenNumber n -> filter even(evenNumber++[n]) ) [] [1..n]
 evenList1 n =  filter even ( foldl' (\ evenNumber n ->(evenNumber++[n]) ) [] [1..n] )                                      
-                                       
+                                        
                                        

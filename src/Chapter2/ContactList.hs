@@ -33,7 +33,7 @@ groupNamesByAllAlphabets names =
         (\ (alpha, collectedNames) -> length (collectedNames) > 0)
         (map (\alphabet -> groupNamesByAlphabet alphabet names) "abcdefghijklmnopqrstuvwxyz")
 
-
+ 
 
 main = do
     print(groupNamesByAllAlphabets ["rooney","baines","ashley","vidic","aguero","vardy","hazard","Alexis"])

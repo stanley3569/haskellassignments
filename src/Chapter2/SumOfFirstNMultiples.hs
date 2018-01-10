@@ -9,4 +9,4 @@ checkModAdd :: Int -> Bool
 checkModAdd x = if(x `mod` 3 == 0 || x `mod` 5 == 0)
                  then True 
                else False 
-        
+         
