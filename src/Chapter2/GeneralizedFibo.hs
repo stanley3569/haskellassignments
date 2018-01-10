@@ -1,0 +1,14 @@
+module Chapter2.GeneralizedFibo where
+
+import Data.List
+
+evenFibo :: Int -> [Int]
+evenFibo n = listOfFibo ( foldl' (  \(x,y,fiboList) i -> ( y, x+y ,   (fiboList++[x+y])  ) ) (0,1,[])  [1..n] )
+
+
+listOfFibo :: (Int,Int,[Int]) -> [Int]
+listOfFibo (x,y,z) = z
+
+
+evenListFibo :: Int ->Int -> [Int] 
+evenListFibo n y= take n (filter (\x -> x `mod` y == 0) (evenFibo n) )
