@@ -17,7 +17,7 @@ prefixLineNumber2 xs = foldl1' (\x y -> x++y) ( map (\(x,y) -> [x++y] ) ( zip (m
 
 --prefixLineNumber3 :: [String] -> [[String]]
 --prefixLineNumber3 xs = scanl1 (\x y -> x++y) ( map (\(x,y) -> [x++y] ) ( zip (map (\x -> (show x)++":" ) [1..(length xs)]) xs ) )
-
+ 
 
 
 --recurssive
