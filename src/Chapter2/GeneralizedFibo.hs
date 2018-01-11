@@ -3,7 +3,7 @@ module Chapter2.GeneralizedFibo where
 import Data.List
 
 evenFibo :: Int -> [Int]
-evenFibo n = listOfFibo ( foldl' (  \(x,y,fiboList) i -> ( y, x+y ,   (fiboList++[x+y])  ) ) (0,1,[])  [1..n] )
+evenFibo n= listOfFibo ( foldl' (  \(x,y,fiboList) i -> ( y, x+y ,   (fiboList++[x+y])  ) ) (0,1,[])  [1..n*(n+10)] )
 
 
 listOfFibo :: (Int,Int,[Int]) -> [Int]
