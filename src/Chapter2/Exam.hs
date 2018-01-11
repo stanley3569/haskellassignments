@@ -52,7 +52,7 @@ validateMarksSubjects score validsubject studentName subjectName = let validMark
 
 
 validateNames :: InputScore -> StudentName -> Bool                                                          --check if name is there in the result
-validateNames score studentName = length (filter (\x -> (x == studentName))  (studentList1 score)) == 1
+validateNames score studentName = (length (filter (\x -> (x == studentName)) (studentList1 score)) == 1)
 
 studentList1 :: InputScore -> [String]  
 studentList1 score = fst (unzip(score))
@@ -82,8 +82,7 @@ duplicateStudents score = let studentsList = studentList1 score
 standardDeviation :: InputScore -> ValidSubjects -> Subject -> Float          --2nd                           --2nd point
 standardDeviation score validsubject subjectName = let averagevalue = (averageMarks score validsubject subjectName)
                                                        listsub = (filter (\x -> (fst x == subjectName)) (foldl' (\arr x -> arr ++ (snd x)) [] (allValidSubjects score validsubject)))
-                                                       markslist = (snd(unzip listsub))
-                                                       
+                                                       markslist = (snd(unzip listsub))                                                      
                                                        averageOfMarks = fromIntegral  (sum ((snd(unzip listsub))) `div` length markslist    )            -- calculateXM                      * calculateXM 
                                                        calculateXM = ( zipWith (\x y -> x-y)  markslist [averageOfMarks..] )
                                                        calculateXMSquare = sum (map (^2) (calculateXM) )
@@ -132,7 +131,7 @@ validSubjects score validsubject studentname  = foldl' (\subMarksList x -> if (f
                                                                   else subMarksList) [] (snd (head (filter (\x -> (fst x)== studentname) score)))
                                                
 
-xyzz score studentname= (snd (head (filter (\x -> (fst x)== studentname) score)))
+--xyzz score studentname= (snd (head (filter (\x -> (fst x)== studentname) score)))
 --xyzz1 score studentname= (snd (head (filter (\x -> (fst x)== studentname) score)))
 
 
@@ -187,7 +186,7 @@ studentsListForExam score validsubject=  foldl' (\arr x -> arr ++ [(allStudentsF
 allStudentsForExam :: InputScore -> ValidSubjects -> Subject -> (Subject,[StudentName])                           --gives subject with valid students
 allStudentsForExam score validsubject subjectName = foldl' (\(subjectName,subject) x ->
                                                             if (studentForExam score validsubject (fst x) subjectName)
-                                                                 then (subjectName, subject ++ [fst x])
+                                                                 then (subjectName, subject++[fst x])
                                                             else  (subjectName,subject)) (subjectName,[]) (allValidNames score validsubject)
 
 studentForExam :: InputScore -> ValidSubjects -> StudentName -> Subject -> Bool                            --validates if a student is ther in the course                                     
@@ -195,10 +194,10 @@ studentForExam score validsubject studentName subjectName = (filter (\x -> (fst 
 
 
 
- 
+ {-}
 groupAllStudents :: InputScore -> ValidSubjects -> StudentForSubject
 groupAllStudents score validsubject =( foldl' (\arrayStudents x -> arrayStudents ++ [(allStudentsForExam score validsubject x)]) [] validsubject )
-
+-}
 
 
 
