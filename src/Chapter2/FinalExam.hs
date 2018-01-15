@@ -1,4 +1,4 @@
-module Chapter2.Exam1 where
+module Chapter2.FinalExam where
 import Data.List
 import Data.Char
 
@@ -71,13 +71,23 @@ standardDeviation score validsubject subjectName = let averagevalue = (averageMa
 
 type SubjectMarks = [(String,Int)]                    
 
+
 validSubjects :: InputScore -> ValidSubjects -> StudentName -> SubjectMarks                           --[(subject,marks)] ---give students valid subject and marks
 validSubjects score validsubject studentname  = foldl' (\subMarksList x -> 
                                                 if (fst (validateMarksSubjects score validsubject studentname (fst x)))== True 
                                                       then subMarksList ++ [(fst x,snd x)] 
                                                 else subMarksList) [] (head (map (snd) (filter(\x -> (fst x) == studentname) score) ) )
 
-
+----xxxxx
+{-}
+validSubjects :: InputScore -> ValidSubjects -> StudentName -> SubjectMarks  
+validSubjects score validsubject studentname = let resultName =( ( ( (filter(\x -> (fst x) == studentname) score) ) )  )
+                                                   validatesubject = concat( map snd (allValidNames resultName validsubject)   )
+                                                    --emptylist = []
+                                                    --validatesubject = validatesubject ++ [(fst resultName,snd resultName)]
+                                               in validatesubject
+-}
+----xxxx
 
 
 type ValidStudents = [(String,[(String,Int)])] 
