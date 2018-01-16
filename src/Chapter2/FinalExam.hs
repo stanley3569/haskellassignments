@@ -20,8 +20,9 @@ type Subject = String
 type SubjectAverage = (String,Float)     
 
 averageMarks :: InputScore ->ValidSubjects -> Subject -> SubjectAverage             --1st
-averageMarks score validsubject subject =let listSubMarks =  (filter (\x -> (fst x == subject)) (foldl' (\arr x -> arr ++ (snd x)) [] (allValidNames score validsubject) ) )
-                                    in (subject,fromIntegral( sum( snd( unzip (listSubMarks) ) )   `div` length(listSubMarks) )     )                          ---1.0                --(foldl'(\sum y -> (sum+snd y) ) 0 listSubMarks )                   
+averageMarks score validsubject subject =
+      let listSubMarks =  (filter (\x -> (fst x == subject)) (foldl' (\arr x -> arr ++ (snd x)) [] (allValidNames score validsubject) ) )
+            in (subject,fromIntegral( sum( snd( unzip (listSubMarks) ) )   `div` length(listSubMarks) )     )                          ---1.0                --(foldl'(\sum y -> (sum+snd y) ) 0 listSubMarks )                   
 
 
 
