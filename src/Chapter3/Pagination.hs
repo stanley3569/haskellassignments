@@ -1,0 +1,45 @@
+module Chapter3.Pagination where
+
+import Data.List
+
+type ItemsPerPage = Int
+type TotalItems = Int
+type CurrentPage = Int
+ 
+type NoOfPages = Int 
+type PageNoList = String
+
+
+
+data Items = MkItems {totalItems::Int , itemsPerPage::Int} deriving (Eq, Show,Ord)
+
+
+
+totalNoOfPages :: Items -> NoOfPages
+totalNoOfPages (MkItems totalItems itemsPerPage) =
+                                let totalpages = if( (totalItems `mod` itemsPerPage) == 0)
+                                                     then ( totalItems `div` itemsPerPage )
+                                                 else ( ( totalItems `div` itemsPerPage ) + 1)
+                                    in totalpages
+
+displayPagination :: Items -> CurrentPage -> PageNoList
+displayPagination (MkItems totalItems itemsPerPage) currentPage =
+                                    let displaypages =   if((totalNoOfPages (MkItems totalItems itemsPerPage) ) < 8 )
+                                                            then "<<Prev " ++ ( pageNumber 1 currentPage (totalNoOfPages (MkItems totalItems itemsPerPage)) ) ++ " Next>>"
+                                                        else 
+                                                            if currentPage>8
+                                                              then "<< Prev | ... " ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage  (currentPage+3)    ) ++" | ... | Next>>"
+                                                            else "<< Prev |" ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage ( currentPage+3 )    ) ++" | ... | Next>>"
+                                    in displaypages
+
+
+pageNumber :: Int -> Int -> Int -> PageNoList
+pageNumber startPage centerPage endPage= (foldl' (\xs x -> xs ++ " | "++ (show x)) "" [startPage..centerPage])  ++   (foldl' (\ xs x -> xs ++ " | "++ (show x)) "*"  [(centerPage+1)..endPage] )
+
+
+
+
+checkStartPage :: Int -> Int
+checkStartPage value = if(value<1)
+                            then 1
+                        else value
