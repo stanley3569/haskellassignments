@@ -3,12 +3,12 @@ module Chapter3.DateArithmetic1 where
 import Data.List
 addDays :: (Int,Int,Int) -> Int -> (Int,Int,Int)
 addDays (dd,mm,yy) daystoadd =
-        let yearType = isLeapYear yy
-            yearDays = yearLength yy
-            yearTypeMonthList = monthLength mm yy
-            daysRemainingInMonth = leftInMonth (dd,mm,yy)
-            daysSinceStartYear = daysSinceYearBegan (dd,mm,yy)
-            daysLeftInYear = leftInYear (dd,mm,yy)
+        let --yearType = isLeapYear yy
+            --yearDays = yearLength yy
+            --yearTypeMonthList = monthLength mm yy
+            --daysRemainingInMonth = leftInMonth (dd,mm,yy)
+            --daysSinceStartYear = daysSinceYearBegan (dd,mm,yy)
+            --daysLeftInYear = leftInYear (dd,mm,yy)
             newDate = addDaysToDate (dd,mm,yy) daystoadd
         in newDate
 
@@ -28,10 +28,12 @@ yearLength n = if (isLeapYear n) then 366 else 365
 
 
 monthLength :: Int -> Int -> Int
-monthLength mm yy = months !! (mm-1) where
-    months = if isLeapYear yy then months2 else months1
-    months1 = [31,28,31,30,31,30,31,31,30,31,30,31]
-    months2 = [31,29,31,30,31,30,31,31,30,31,30,31]
+monthLength mm yy = 
+    let months = if isLeapYear yy 
+                    then  [31,29,31,30,31,30,31,31,30,31,30,31]
+                else [31,28,31,30,31,30,31,31,30,31,30,31]
+        monthLengthInDays = months !! (mm-1)
+    in monthLengthInDays
   
   
 leftInMonth :: (Int,Int,Int) -> Int
@@ -54,7 +56,9 @@ addDaysToDate (dd,mm,yy) days =
                         if (days == 0) 
                             then (dd,mm,yy)
                         else if ( (dd==1) && (mm == 1) && (days>= yearLength yy) )
-                            then addDays (1,1,(yy+1)) (days- yearLength yy)                            
+                            then addDays (1,1,(yy+1)) (days- yearLength yy) 
+                        else if (days>=(yearLength yy))
+                            then addDays (dd,mm, (yy)+ (days `mod` (yearLength yy) ) ) (days -(days `mod` (yearLength yy)) )                           
                         else  
                             if ( days >= leftInYear (dd,mm,yy))
                                 then addDays (dd,mm,(yy+1)) (days- (leftInYear (dd,mm,yy)) )

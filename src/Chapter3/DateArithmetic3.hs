@@ -3,11 +3,6 @@ module Chapter3.DateArithmetic3 where
 import Data.List
 
 
-
---data Day = MkDay Int deriving (Eq, Show, Ord)
---data Month = MkMonth Int deriving (Eq, Show, Ord)
---data Year = MkYear Int deriving (Eq, Show, Ord)
-
 data Date = MkDate Int Int Int deriving (Eq, Show, Ord)
 
 addDays :: Date -> Int -> Date
@@ -41,10 +36,12 @@ yearLength n = if (isLeapYear n) then 366 else 365
 
 
 monthLength :: Int -> Int -> Int                                --days in a month of a particular year
-monthLength (mm) (yy) = months !! (mm-1)  where
-    months = if isLeapYear (yy) then months2 else months1
-    months1 = [31,28,31,30,31,30,31,31,30,31,30,31]
-    months2 = [31,29,31,30,31,30,31,31,30,31,30,31]
+monthLength mm yy = 
+    let months = if isLeapYear yy 
+                    then  [31,29,31,30,31,30,31,31,30,31,30,31]
+                else [31,28,31,30,31,30,31,31,30,31,30,31]
+        monthLengthInDays = months !! (mm-1)
+    in monthLengthInDays
 
 
 leftInMonth :: (Int,Int,Int) -> Int                                --no of days left in a month from current day
@@ -67,7 +64,9 @@ addDaysToDate (MkDate dd mm yy) (days) =
                 if (days == 0) 
                     then (MkDate dd mm yy)
                 else if ( (dd==(1) )&& (mm == (1) ) && ( days>=  (yearLength  yy ) ) ) 
-                    then addDays (MkDate 1 1 (yy+1)) ( ( days) -  (yearLength yy )  )                           
+                    then addDays (MkDate 1 1 (yy+1)) ( ( days) -  (yearLength yy )  )
+                else if (days>=(yearLength yy))
+                    then addDays (MkDate dd mm ((yy)+ (days `mod` (yearLength yy) ) ) ) (days -(days `mod` (yearLength yy)) )                             
                 else  
                     if (  days >= (leftInYear (dd,mm,yy)) ) 
                         then addDays (MkDate dd mm (yy+1)) (days- (leftInYear (dd,mm,yy)) )

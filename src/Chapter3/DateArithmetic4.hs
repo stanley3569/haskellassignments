@@ -1,22 +1,20 @@
-module Chapter3.DateArithmetic2 where
+module Chapter3.DateArithmetic4 where
     
 import Data.List
 
 
 
-data Day = MkDay Int deriving (Eq, Show, Ord)
-data Month = MkMonth Int deriving (Eq, Show, Ord)
-data Year = MkYear Int deriving (Eq, Show, Ord)
+data Date = MkDate{ dtDay :: Int,dtMonth :: Int, dtYear :: Int } deriving (Eq, Show, Ord)
 
-addDays :: (Day, Month, Year) -> Int -> (Day, Month, Year)
-addDays (MkDay dd,MkMonth mm,MkYear yy) daystoadd =
-    let yearType = isLeapYear (yy)
-       -- yearDays = yearLength (yy)
-       -- yearTypeMonthList = monthLength (mm) (yy)
-        --daysRemainingInMonth = leftInMonth (dd,mm,yy)
-        --daysSinceStartYear = daysSinceYearBegan (dd, mm,yy)
-        --daysLeftInYear = leftInYear (dd,mm, yy)
-        newDate = addDaysToDate (MkDay dd,MkMonth mm,MkYear yy) (daystoadd)
+addDays :: Date -> Int -> Date
+addDays (MkDate dd mm yy) daystoadd =
+    let --yearType = isLeapYear (yy)
+      --  yearDays = yearLength (yy)
+      --  yearTypeMonthList = monthLength (mm) (yy)
+      --  daysRemainingInMonth = leftInMonth (dd,mm,yy)
+      --  daysSinceStartYear = daysSinceYearBegan (dd, mm,yy)
+     --   daysLeftInYear = leftInYear (dd,mm, yy)
+        newDate = addDaysToDate (MkDate dd mm yy) (daystoadd)
     in newDate
 
 
@@ -60,21 +58,21 @@ leftInYear :: (Int,Int,Int) -> Int                                      --total 
 leftInYear (dd,mm,yy) = yearLength (yy ) - (daysSinceYearBegan (dd,mm,yy) )
 
 
-addDaysToDate :: (Day, Month, Year) -> Int -> (Day, Month, Year)
+addDaysToDate :: (Date) -> Int -> (Date)
 --addDaysToDate (dd,mm,yy) (0) = (dd,mm,yy)
 
-addDaysToDate (MkDay dd,MkMonth mm,MkYear yy) (days) = 
+addDaysToDate (MkDate dd mm yy) (days) = 
                 if (days == 0) 
-                    then (MkDay dd,MkMonth mm,MkYear yy)
+                    then (MkDate dd mm yy)
                 else if ( (dd==(1) )&& (mm == (1) ) && ( days>=  (yearLength  yy ) ) ) 
-                    then addDays (MkDay 1,MkMonth 1,MkYear (yy+1)) ( ( days) -  (yearLength yy )  ) 
+                    then addDays (MkDate 1 1 (yy+1)) ( ( days) -  (yearLength yy )  )
                 else if (days>=(yearLength yy))
-                    then addDays (MkDay dd,MkMonth mm,MkYear ( (yy)+ (days `mod` (yearLength yy) ) )  ) (days -(days `mod` (yearLength yy)) )                  
+                    then addDays (MkDate dd mm ( (yy)+ (days `mod` (yearLength yy) ) )  ) (days -(days `mod` (yearLength yy)) )                            
                 else  
                     if (  days >= (leftInYear (dd,mm,yy)) ) 
-                        then addDays (MkDay dd,MkMonth mm,MkYear (yy+1)) (days- (leftInYear (dd,mm,yy)) )
+                        then addDays (MkDate dd mm (yy+1)) (days- (leftInYear (dd,mm,yy)) )
                     else if ( days >=  (leftInMonth (dd,mm,yy)  ) )
-                        then addDays (if mm == (12) then (MkDay 1,MkMonth 1,MkYear (yy+1) ) else (MkDay 1,MkMonth (mm+ 1),MkYear yy) ) (days- ( (leftInMonth (dd,mm,yy) ) ) )
-                    else (  MkDay (dd + days ) ,MkMonth mm,MkYear yy)
+                        then addDays (if mm == (12) then (MkDate 1 1 (yy+1) ) else (MkDate 1 (mm+ 1) yy) ) (days- ( (leftInMonth (dd,mm,yy) ) ) )
+                    else (  MkDate (dd + days ) mm yy)
 
 
