@@ -25,7 +25,7 @@ displayPagination totalItems itemsPerPage currentPage = if((totalNoOfPages total
 
 
 pageNumber :: Int -> Int -> Int -> String
-pageNumber startPage centerPage endPage= (foldl' (\xs x -> xs ++ " | "++ (show x)) "" [startPage..centerPage])  ++   (foldl' (\ xs x -> xs ++ " | "++ (show x)) "*"  [(centerPage+1)..endPage] )
+pageNumber startPage centerPage endPage= ( concat (intersperse " | " (map show[(startPage)..(centerPage)]) ) ) ++ "* | " ++ ( concat (intersperse " | " (map show[(centerPage+1)..(endPage)]) ) )
 
 
 
@@ -40,25 +40,33 @@ checkStartPage value = if(value<1)
                         else value
 
 
---checkCurrentPage :: Int -> Int -> Int
---checkCurrentPage totalPages value = if(value> (value-1))
- --                                       then (value-1)
-   --                                 else value
-
 
 
 type NumOfPagesToDisplay = Int 
 displayPagination1 :: NumOfPagesToDisplay -> TotalItems -> ItemsPerPage -> CurrentPage -> PageNoList
-displayPagination1 noOfPagesToDisplay totalItems itemsPerPage currentPage= if((totalNoOfPages totalItems itemsPerPage) < noOfPagesToDisplay )
+displayPagination1 noOfPagesToDisplay totalItems itemsPerPage currentPage = if( (totalNoOfPages totalItems itemsPerPage) < noOfPagesToDisplay )
+                                                                                then "<<Prev " ++ ( pageNumber 1 currentPage (totalNoOfPages totalItems itemsPerPage) ) ++ " Next>>"
+                                                                            else
+                                                                                if ( ((totalNoOfPages totalItems itemsPerPage)-currentPage) > (endSide noOfPagesToDisplay) && currentPage > ns noOfPagesToDisplay )   
+                                                                                    then "<< Prev | ... " ++ (pageNumber ( checkStartPage(currentPage-(endSide noOfPagesToDisplay)-1) ) currentPage  (currentPage+(endSide noOfPagesToDisplay)+1)    ) ++" | ... | Next>>"
+                                                                                else if ( currentPage > ns noOfPagesToDisplay   )
+                                                                                    then "<< Prev | ... " ++ (pageNumber ( checkStartPage((totalNoOfPages totalItems itemsPerPage)-noOfPagesToDisplay+1 ) ) currentPage  ((totalNoOfPages totalItems itemsPerPage))    ) ++" | Next>>"
+                                                                                else "<< Prev  " ++ (pageNumber ( checkStartPage(1) ) currentPage  (noOfPagesToDisplay)    ) ++" | ... | Next>>"
+    
+    
+    {-}
+    if((totalNoOfPages totalItems itemsPerPage) < noOfPagesToDisplay )
                                                                                    then "<<Prev " ++ ( pageNumber 1 currentPage (totalNoOfPages totalItems itemsPerPage) ) ++ " Next>>"
                                                                                else 
                                                                                    if currentPage> noOfPagesToDisplay
                                                                                        then "<< Prev | ... " ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage  (currentPage+3)    ) ++" | ... | Next>>"
                                                                                    else "<< Prev |" ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage ( currentPage+3 )    ) ++" | ... | Next>>"
    
-   
+   -}
 
 
 endSide noOfPagesToDisplay = (noOfPagesToDisplay `div` 2)-1
 
-ns noOfPagesToDisplay= if (noOfPagesToDisplay `mod` 2) ==0 then noOfPagesToDisplay `div` 2 else (noOfPagesToDisplay `div` 2)+1
+ns noOfPagesToDisplay= if (noOfPagesToDisplay `mod` 2) ==0 
+                            then noOfPagesToDisplay `div` 2 
+                       else (noOfPagesToDisplay `div` 2)+1
