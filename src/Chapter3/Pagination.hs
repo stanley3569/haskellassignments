@@ -34,7 +34,8 @@ displayPagination (MkItems totalItems itemsPerPage) currentPage =
 
 
 pageNumber :: Int -> Int -> Int -> PageNoList
-pageNumber startPage centerPage endPage= (foldl' (\xs x -> xs ++ " | "++ (show x)) "" [startPage..centerPage])  ++   (foldl' (\ xs x -> xs ++ " | "++ (show x)) "*"  [(centerPage+1)..endPage] )
+pageNumber startPage centerPage endPage= ( concat (intersperse " | " (map show[(startPage)..(centerPage)]) ) ) ++ "* | " ++ ( concat (intersperse " | " (map show[(centerPage+1)..(endPage)]) ) )
+
 
 
 
