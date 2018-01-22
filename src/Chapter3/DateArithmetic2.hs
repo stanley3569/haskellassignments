@@ -11,11 +11,11 @@ data Year = MkYear Int deriving (Eq, Show, Ord)
 addDays :: (Day, Month, Year) -> Int -> (Day, Month, Year)
 addDays (MkDay dd,MkMonth mm,MkYear yy) daystoadd =
     let yearType = isLeapYear (yy)
-        yearDays = yearLength (yy)
-        yearTypeMonthList = monthLength (mm) (yy)
-        daysRemainingInMonth = leftInMonth (dd,mm,yy)
-        daysSinceStartYear = daysSinceYearBegan (dd, mm,yy)
-        daysLeftInYear = leftInYear (dd,mm, yy)
+       -- yearDays = yearLength (yy)
+       -- yearTypeMonthList = monthLength (mm) (yy)
+        --daysRemainingInMonth = leftInMonth (dd,mm,yy)
+        --daysSinceStartYear = daysSinceYearBegan (dd, mm,yy)
+        --daysLeftInYear = leftInYear (dd,mm, yy)
         newDate = addDaysToDate (MkDay dd,MkMonth mm,MkYear yy) (daystoadd)
     in newDate
 
