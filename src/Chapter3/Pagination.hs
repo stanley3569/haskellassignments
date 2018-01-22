@@ -28,8 +28,8 @@ displayPagination (MkItems totalItems itemsPerPage) currentPage =
                                                             then "<<Prev " ++ ( pageNumber 1 currentPage (totalNoOfPages (MkItems totalItems itemsPerPage)) ) ++ " Next>>"
                                                         else 
                                                             if currentPage>8
-                                                              then "<< Prev | ... " ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage  (currentPage+3)    ) ++" | ... | Next>>"
-                                                            else "<< Prev |" ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage ( currentPage+3 )    ) ++" | ... | Next>>"
+                                                              then "<< Prev | ... " ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage  ( checkEndPage  (currentPage+3) (totalNoOfPages (MkItems totalItems itemsPerPage) )      )    ) ++" | ... | Next>>"
+                                                            else "<< Prev |" ++ (pageNumber ( checkStartPage(currentPage-3) ) currentPage ( checkEndPage  (currentPage+3) (totalNoOfPages (MkItems totalItems itemsPerPage) )      )     ) ++" | ... | Next>>"
                                     in displaypages
 
 
@@ -44,3 +44,10 @@ checkStartPage :: Int -> Int
 checkStartPage value = if(value<1)
                             then 1
                         else value
+
+
+
+checkEndPage :: Int -> Int -> Int 
+checkEndPage pageNo endPage = if(pageNo> endPage)
+                                    then endPage
+                               else pageNo
