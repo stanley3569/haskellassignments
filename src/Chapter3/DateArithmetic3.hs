@@ -65,8 +65,8 @@ addDaysToDate (MkDate dd mm yy) (days) =
                     then (MkDate dd mm yy)
                 else if ( (dd==(1) )&& (mm == (1) ) && ( days>=  (yearLength  yy ) ) ) 
                     then addDays (MkDate 1 1 (yy+1)) ( ( days) -  (yearLength yy )  )
-                else if (days>=(yearLength yy))
-                    then addDays (MkDate dd mm ((yy)+ (days `mod` (yearLength yy) ) ) ) (days -(days `mod` (yearLength yy)) )                             
+                --else if (days>=(yearLength yy))
+                    --then addDays (MkDate dd mm ((yy)+ (days `mod` (yearLength yy) ) ) ) (days -(days `mod` (yearLength yy)) )                             
                 else  
                     if (  days >= (leftInYear (dd,mm,yy)) ) 
                         then addDays (MkDate dd mm (yy+1)) (days- (leftInYear (dd,mm,yy)) )
