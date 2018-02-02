@@ -106,22 +106,6 @@ standardDeviation score subjectName =
 validSubjectsStudentList :: [(Subject, [StudentName])]
 validSubjectsStudentList = [("English", []),("Geography", []),("Physics", []),("Chemistry", []),("Economics", []),("Computer Science", [])]
 
-{-not working}
-studentsListForExam :: InputScore -> [(Subject, [StudentName])]
-studentsListForExam score = 
-    let listsub =validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                    newlist++(concatMap (\(subjectname,marks,validatesubject,validmessage)-> 
-                        if(validstudent==True && validatesubject == True )
-                            then map (\(accsubjectname,accstudentnames) -> 
-                                                if(accsubjectname == subjectname)
-                                                    then (accsubjectname,[studentname]++accstudentnames)                   --studentname:accstudentnames
-                                                else (accsubjectname,accstudentnames)  ) newlist
-                        else [] )) subjectinfo
-                 ) validSubjectsStudentList score 
-                    
-
-    in listsub
--}
 
 
 -------------------------------------------
@@ -130,21 +114,39 @@ studentsListForExam1 :: InputScore -> [(Subject, [StudentName])]
 studentsListForExam1 score = 
     let listsub =validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
                         newlist++(concatMap (\(subjectname,marks,validsubject,validmessage)->
-                            if(validstudent==True &&validsubject == True)
+                            if(validstudent==True && validsubject == True)
                                 then [(subjectname,studentname)]
                             else [] )) subjectinfo
             ) [] score 
---[("English","Mojo"),("Chemistry","Mojo"),("Physics","Mojo"),("Geography","Mojo"),("Chemistry","Captain Jack"),("Geography","Captain Jack"),("Geography","Dexter")]                   
-        studentlist = map (\x -> foldl (\ (subjectname,studentname) (x,y) ->
+                                                                                                        --[("English","Mojo"),("Chemistry","Mojo"),("Physics","Mojo"),("Geography","Mojo"),("Chemistry","Captain Jack"),("Geography","Captain Jack"),("Geography","Dexter")]                   
+        studentlist = map (\z -> foldl' (\ (subjectname,studentname) (x,y) ->
                                             if(x == subjectname)
                                                 then (subjectname,studentname++[y])
                                             else (subjectname,studentname)   )
-                                        x listsub) validSubjectsStudentList
+                                        z listsub) validSubjectsStudentList
     in studentlist
---[("English",["Mojo"]),("Geography",["Mojo","Captain Jack","Dexter"]),("Physics",["Mojo"]),("Chemistry",["Mojo","Captain Jack"]),("Economics",[]),("Computer Science",[])]
+                                                                                                            --[("English",["Mojo"]),("Geography",["Mojo","Captain Jack","Dexter"]),("Physics",["Mojo"]),("Chemistry",["Mojo","Captain Jack"]),("Economics",[]),("Computer Science",[])]
 
 
 
 
- 
+grouping :: InputScore -> [([Subject], [StudentName])]
+grouping score  = 
+    let listofstudent = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
+                        if(validstudent==True)
+                            then newlist++[(studentname,concatMap(\(subjectname,marks,validsubject,validmessage) -> 
+                                    if validsubject
+                                        then [subjectname]
+                                    else []
+                                    ) subjectinfo)]
+                        else newlist
+                        ) [] score
+
+                                                                                                                        --[("Mojo",["English","Chemistry","Physics","Geography"]),("Captain Jack",["Chemistry","Geography"]),("Bahubali",[]),("Dexter",["Geography"])]                                            --1--[("Mojo",["English","Chemistry","Physics","Geography"]),("Captain Jack",["Chemistry","Geography"]),("Bahubali",[]),("Dexter",["Geography"])]  
+        subjectStudentList = studentsListForExam1 score 
+                                                                                                                            --[("English",["Mojo"]),("Geography",["Mojo","Captain Jack","Dexter"]),("Physics",["Mojo"]),("Chemistry",["Mojo","Captain Jack"]),("Economics",[]),("Computer Science",[])]       
+        subjectListbynames = delete [] (nub(map (\(y,z)-> z) listofstudent) )                           
+        namesListBysub =  (nub(map(\(y,z)-> z) subjectStudentList))
+
+        in zip (subjectListbynames) namesListBysub  
 
