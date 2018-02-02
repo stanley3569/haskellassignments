@@ -41,7 +41,7 @@ leftInYear (dd,mm,yy) = yearLength (yy) - (daysSinceYearBegan (dd,mm,yy) ) +1
 addDays :: (Int,Int,Int) -> Int -> (Int,Int,Int)
 addDays (dd,mm,yy) days =  
                             if ( days >= leftInYear (dd,mm,yy))
-                                then addDays (dd,1,(yy+1)) (days- (leftInYear (dd,mm,yy)) )                            
+                                then addDays (1,1,(yy+1)) (days- (leftInYear (dd,mm,yy)) )                            
                             else if ( days >= leftInMonth (dd,mm,yy)  )
                                     then if((mm)<=12 ) 
                                             then addDays (dd,mm+1,yy) (days- (leftInMonth (dd,mm,yy) ) )
