@@ -29,7 +29,7 @@ daysSinceYearBegan :: Date -> Int
 daysSinceYearBegan (MkDate dd mm yy) =if(mm==1)
                                 then (dtDay (MkDate dd mm yy))
                                else
-                                (dtDay (MkDate dd mm yy)) + sum( take ((dtMonth (MkDate dd mm yy))-1)  (monthLength mm yy) ) 
+                                (dtDay (MkDate dd mm yy)) + sum( take (  (dtMonth (MkDate dd mm yy))-1)  (monthLength (dtMonth (MkDate dd mm yy)) (dtMonth (MkDate dd mm yy))) ) 
 
 
 
