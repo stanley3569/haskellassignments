@@ -2,7 +2,7 @@ module NewConcepts1.LinkList where
 
 
 instance Eq a => Eq (LinkedList a) where
-    (LLNode a _) == (LLNode c _) = (a == c)                                         
+    (LLNode a b) == (LLNode c d) = (a == c) && (b==d)                                        
     LLEmpty == LLEmpty = True
     _ == _ = False
 
