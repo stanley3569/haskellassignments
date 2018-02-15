@@ -7,12 +7,14 @@ instance Eq a => Eq (LinkedList a) where
     _ == _ = False
 
 instance Ord a => Ord (LinkedList a) where
-    (LLNode a _) <= (LLNode c _) = compare a c /= GT
-    (LLNode a _) < (LLNode c _) = compare a c == LT
-    (LLNode a _) >= (LLNode c _) = compare a c /= LT
-    (LLNode a _) > (LLNode c _) = compare a c == GT
-
-
+    compare (LLNode a b) (LLNode c d) = if (a == c)
+                                            then compare b d
+                                        else if (a>c)
+                                            then GT
+                                        else LT
+    compare (LLNode _ _) LLEmpty = GT
+    compare LLEmpty (LLNode _ _) = LT
+    compare LLEmpty LLEmpty = EQ
 
 
 
