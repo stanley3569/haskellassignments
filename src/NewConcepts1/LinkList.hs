@@ -6,13 +6,23 @@ instance Eq a => Eq (LinkedList a) where
     LLEmpty == LLEmpty = True
     _ == _ = False
 
-    
+instance Ord a => Ord (LinkedList a) where
+    (LLNode a _) <= (LLNode c _) = compare a c /= GT
+    (LLNode a _) < (LLNode c _) = compare a c == LT
+    (LLNode a _) >= (LLNode c _) = compare a c /= LT
+    (LLNode a _) > (LLNode c _) = compare a c == GT
+
+
+
+
+
+
 {-}
 instance Ord a => Ord (LinkedList a) where
     compare (LLNode a _) (LLNode c _) = compare a c
     compare (LLEmpty) (LLEmpty) = EQ
 -}
-
+{-}
 instance Ord a => Ord (LinkedList a) where
     (>=) (LLNode a _) (LLNode c _) = a >= c
     (>=) _ _ = False
@@ -22,7 +32,7 @@ instance Ord a => Ord (LinkedList a) where
     (>) _ _ = False
     (<) (LLNode a _) (LLNode c _) = a < c
     (<) _ _ = False
-
+-}
 
 instance Show a => Show (LinkedList a) where
     show (LLNode a b) = show a ++ " " ++ show (b)
