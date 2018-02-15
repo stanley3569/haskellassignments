@@ -1,7 +1,7 @@
 module NewConcepts.ExamTest where
 import Data.List
 
-
+-----------------------------------------------------------------
 
 score :: [(String,[(String,Int)])]
 score=[ ("Mojo", [("English", 84), ("Chemistry", 81), ("Physics", 95), ("Geography", 75)])
@@ -42,7 +42,7 @@ validateMarks score =
 
 
 
-validateMarksSubjects ::(b->  (StudentName,Bool,[(Subject,Marks,Bool,String)]) -> b ) ->b -> InputScore -> b
+validateMarksSubjects ::(b->  (StudentName,Maybe [(Subject,Marks,Bool,String)]) -> b ) ->b -> InputScore -> b
 validateMarksSubjects testfunc accumulator score= 
     foldl' (\x y -> testfunc x y) accumulator newscore 
       where dupicatenames = (duplicateStudents score)
@@ -50,8 +50,8 @@ validateMarksSubjects testfunc accumulator score=
             validMarks = validateMarks score
             newscore =  map(\(studentname,subjectinfo) -> 
                             if (studentname `elem` dupicatenames) 
-                                then (studentname,False,subjectinfo) 
-                            else (studentname,True,subjectinfo)) validMarks
+                                then (studentname,Nothing) 
+                            else (studentname,Just subjectinfo)) validMarks
 
 
 
@@ -66,23 +66,26 @@ duplicateStudents score =
 
 invalidScores :: InputScore  -> [(StudentName,[(Subject,Marks,String)])]
 invalidScores score =  
-    validateMarksSubjects (\newlist (studentname,_,subjectinfo) ->                         
-                               newlist++[(studentname, (concatMap (\(subjectname,marks,validsubject,validmessage)->
-                                        if(validsubject==False)
-                                            then [(subjectname,marks,validmessage)]
-                                        else [] )) subjectinfo)] ) [] score 
-
+    validateMarksSubjects (\newlist (studentname,subjectinfo) ->  newlist++    
+                        case subjectinfo of 
+                            Nothing -> []
+                            Just scorell -> [(studentname, (concatMap (\(subjectname,marks,validsubject,validmessage)->
+                                                if(validsubject==False)
+                                                    then [(subjectname,marks,validmessage)]
+                                                else [] )) scorell )] ) [] score 
+    
 
 
 averageMarks :: InputScore -> Subject -> Float
 averageMarks score subjectName =
     (fromIntegral( sum( markslist) ) / fromIntegral(length markslist))   
-    where markslist = validateMarksSubjects (\newlist (_,validstudent,subjectinfo) ->
-                                newlist++(concatMap (\(subjectname,marks,validsubject,_)->
-                                    if(validstudent==True && subjectname==subjectName && validsubject == True)
-                                        then [marks]
-                                    else [] )) subjectinfo
-                                ) [] score 
+    where markslist = validateMarksSubjects (\newlist (_,subjectinfo) -> newlist++
+                                case subjectinfo of
+                                    Nothing -> []
+                                    Just scorell -> (concatMap (\ (subjectname,marks,validsubject,_) -> 
+                                                        if (subjectname == subjectName && validsubject==True)
+                                                            then [marks]
+                                                        else []) ) scorell ) [] score
 
 
 
@@ -91,12 +94,13 @@ standardDeviation :: InputScore -> Subject -> Float
 standardDeviation score subjectName = 
     sqrt(fromIntegral(calculateXMSquare `div` (length(listsub) ) )   )  
     where averagevalue = averageMarks score subjectName                               
-          listsub = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                        newlist++(concatMap (\(subjectname,marks,validsubject,validmessage)->
-                            if(validstudent==True && subjectname==subjectName && validsubject == True)
-                                then [marks]
-                            else [] )) subjectinfo
-            ) [] score 
+          listsub = validateMarksSubjects (\newlist (studentname,subjectinfo) -> newlist++
+                        case subjectinfo of
+                                Nothing -> []
+                                Just scorell -> (concatMap (\ (subjectname,marks,validsubject,_) -> 
+                                    if (subjectname == subjectName && validsubject==True)
+                                        then [marks]
+                                    else []) ) scorell ) [] score
           calculateXM = ( zipWith (\x y -> x-y)  listsub [round(averagevalue)..] )
           calculateXMSquare = sum $ map (^2) (calculateXM) 
     
@@ -119,12 +123,14 @@ studentsListForExam1 score =
                                             else (subjectname,studentname)   )
                                         z listsub) validSubjectsStudentList
 
-    where listsub = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                                newlist++(concatMap (\(subjectname,marks,validsubject,validmessage)->
-                                    if(validstudent==True && validsubject == True)
-                                        then [(subjectname,studentname)]
-                                    else [] )) subjectinfo
-                                ) [] score 
+    where listsub = validateMarksSubjects (\newlist (studentname,subjectinfo) -> newlist++
+                        case subjectinfo of
+                            Nothing -> []
+                            Just scorell ->(concatMap (\(subjectname,_,validsubject,_)->
+                                                if( validsubject == True)
+                                                    then [(subjectname,studentname)]
+                                                else [] )) scorell
+                                            ) [] score 
                                                                                                             --[("English",["Mojo"]),("Geography",["Mojo","Captain Jack","Dexter"]),("Physics",["Mojo"]),("Chemistry",["Mojo","Captain Jack"]),("Economics",[]),("Computer Science",[])]
 
 
@@ -134,15 +140,15 @@ grouping :: InputScore -> [([Subject], [StudentName])]
 grouping score  = 
     zip (subjectListbynames) namesListBysub 
     where
-        listofstudent = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                        if(validstudent==True)
-                            then newlist++[(studentname,concatMap(\(subjectname,_,validsubject,_) -> 
-                                    if validsubject
-                                        then [subjectname]
-                                    else []
-                                    ) subjectinfo)]
-                        else newlist
-                        ) [] score
+        listofstudent = validateMarksSubjects (\newlist (studentname,subjectinfo) -> newlist++
+                        case subjectinfo of
+                            Nothing -> []
+                            Just scorell ->[(studentname,concatMap(\(subjectname,_,validsubject,_) -> 
+                                                if (validsubject==True)
+                                                    then [subjectname]
+                                                else []
+                                                ) scorell)]
+                                            ) [] score
 
                                                                                                                         --[("Mojo",["English","Chemistry","Physics","Geography"]),("Captain Jack",["Chemistry","Geography"]),("Bahubali",[]),("Dexter",["Geography"])]                                            --1--[("Mojo",["English","Chemistry","Physics","Geography"]),("Captain Jack",["Chemistry","Geography"]),("Bahubali",[]),("Dexter",["Geography"])]  
         subjectStudentList = studentsListForExam1 score 
