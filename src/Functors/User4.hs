@@ -94,10 +94,10 @@ permissionList :: [(Int, Int, Int, String, String, String)]
 permissionList = [
                     (2765,2,2,"manage_calendar","Trips::Trip","xxxxxAllowed to edit Departure calendar"),
                     (2766,3,45,"manage_agent_report","Reports::AgentReport","xxxxAllowed to manage agent reports"),
-                    (1041,4,46,"manage_agents","Common::Client","xxxxxAllowed to manage agent clients")         --,
-                    --(1429,5,44,"edit_trip_confirmation_mode","Trips::Trip","xxxxxAllowed to edit trip's confirmation mode"),
-                    --(2393,6,4,"manage_addons","Trips::Trip","xxxxxxAllowed to edit trip addons"),
-                    --(2765,9,8,"manage_post_trip_email","Trips::Trip","xxxxxxAllowed to edit post trip email")
+                    (1041,4,46,"manage_agents","Common::Client","xxxxxAllowed to manage agent clients"),         --,
+                    (1429,5,44,"edit_trip_confirmation_mode","Trips::Trip","xxxxxAllowed to edit trip's confirmation mode"),
+                    (2393,6,4,"manage_addons","Trips::Trip","xxxxxxAllowed to edit trip addons"),
+                    (2765,9,8,"manage_post_trip_email","Trips::Trip","xxxxxxAllowed to edit post trip email")
                 ]
 
 
