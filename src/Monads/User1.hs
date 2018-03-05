@@ -137,7 +137,7 @@ main1 userDb = (putStrLn "\n 1. register user \n 2. replace user \n 3. deactivat
                                   "3" -> deactivateUser1 userDb  >>= (\(_,_,userdb)->main1 userdb )
                                   "4" -> verifyUser1 userDb >>= (\(_,_,userdb) -> main1 userdb)
                                   "5" -> display1 userDb 
-                                  "6" -> countUsers1 userDb >>= (\_-> main1 userDb)
+                                  
                               
                                   _   -> main1 userDb
 
