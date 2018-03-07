@@ -1,4 +1,4 @@
-module Monads.User1 where
+module Monads.User4 where
 
 import Data.List 
 import Text.Read
@@ -110,7 +110,7 @@ validatePostal :: String -> IO String
 validatePostal postalcode =
               if((all isDigit postalcode) && (length postalcode ==6))
                 then pure postalcode
-              else putStrLn "--Invalid Postal Code--Re-enter the Postal code--" >> getLine >>= \postalcode -> validatePostal postalcode
+              else putStrLn "--Invalid Postal Code--Re-enter the Postal code--" >> getLine >>= \postalcode1 -> validatePostal postalcode1
 
 validateVerificationCode :: String -> IO String
 validateVerificationCode verificationcode =
@@ -183,7 +183,7 @@ countUser1 status usrDb =
 display1 :: (Applicative f, Foldable t) => t User -> f [Char]
 display1 userDb =
   let display = foldl' (\arr MkUser{userEmail=MkEmail email,userFullName = name,userPassword = password,userPostalCode = postalcode,userStatus = status,userVerificationCode = verifycode} ->
-        arr++" "++email++" "++name++" "++password++" "++postalcode++" "++show status++" "++verifycode++"\n") "" userDb
+        arr++" "++email++" "++name++" "++password++" "++postalcode++" "++show status++" "++verifycode++ " | ") "" userDb
   in pure display
 
 
