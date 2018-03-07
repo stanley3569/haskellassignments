@@ -79,18 +79,8 @@ userStatusSummary userDb =
   in map (\status -> (status, countUsers status userDb)) statuses
   
 
-registerUser1 ::[User] -> IO [User]
-registerUser1  userDb =
-  putStrLn "Enter the email " >>  getLine >>= \email -> validateEmail email >>= \email ->
-    putStrLn "Enter the name " >> getLine >>= \name -> validateName name >>= \name ->
-      putStrLn "Enter the password " >> getLine >>= \password -> validatePassword password >>= \password ->
-        putStrLn "Enter the postal code " >> getLine >>= \postalcode -> validatePostal postalcode >>= \postalcode ->
-          let newuser = MkNewUser{nuserEmail = MkEmail email, nuserFullName = name, nuserPassword = password, nuserPostalCode = postalcode}
-              output =   (registerUser newuser userDb)
-          in case output of
-                Left err -> putStrLn err >> registerUser1 userDb
-                Right udb -> pure udb
 
+----validations----
 
 validateEmail :: String -> IO String
 validateEmail email =
@@ -128,14 +118,32 @@ validateVerificationCode verificationcode =
                 then pure verificationcode
               else putStrLn "--Invalid verification Code--Re-enter the verification code--" >> getLine >>= \verificationcode1 -> validateVerificationCode verificationcode1
                
+----------
+
+
+
+
+
+registerUser1 ::[User] -> IO [User]
+registerUser1  userDb =
+  putStrLn "Enter the email " >>  getLine >>= \email -> validateEmail email >>= \email1 ->
+    putStrLn "Enter the name " >> getLine >>= \name -> validateName name >>= \name1 ->
+      putStrLn "Enter the password " >> getLine >>= \password -> validatePassword password >>= \password1 ->
+        putStrLn "Enter the postal code " >> getLine >>= \postalcode -> validatePostal postalcode >>= \postalcode1 ->
+          let newuser = MkNewUser{nuserEmail = MkEmail email1, nuserFullName = name1, nuserPassword = password1, nuserPostalCode = postalcode1}
+              output =   (registerUser newuser userDb)
+          in case output of
+                Left err -> putStrLn err >> registerUser1 userDb
+                Right udb -> pure udb
+
 
 
 
 verifyUser1 :: [User] -> IO (Bool, String, [User])
 verifyUser1 userDb =
-  putStrLn "Enter the email " >> getLine >>= \email -> validateEmail email >>= \email ->
-    putStrLn "Enter the code " >> getLine >>=  \code -> validateVerificationCode code >>= \code ->
-                let output = (verifyUser (MkEmail email) code userDb)
+  putStrLn "Enter the email " >> getLine >>= \email -> validateEmail email >>= \email1 ->
+    putStrLn "Enter the code " >> getLine >>=  \code -> validateVerificationCode code >>= \code1 ->
+                let output = (verifyUser (MkEmail email1) code1 userDb)
                 in case output of
                       Left err -> putStrLn err >> verifyUser1 userDb
                       Right udb ->pure udb
@@ -143,8 +151,8 @@ verifyUser1 userDb =
 
 deactivateUser1 :: [User] -> IO (Bool, String, [User])
 deactivateUser1 userDb =
-  putStrLn "Enter the email " >> getLine >>= \email -> validateEmail email >>= \email ->
-            let output = (deactivateUser (MkEmail email) userDb)
+  putStrLn "Enter the email " >> getLine >>= \email -> validateEmail email >>= \email1 ->
+            let output = (deactivateUser (MkEmail email1) userDb)
             in case output of
                     Left err -> putStrLn err >> deactivateUser1 userDb
                     Right udb -> pure udb
@@ -152,11 +160,11 @@ deactivateUser1 userDb =
 
 replaceUser1 :: [User] -> IO [User]
 replaceUser1 userDb =
-  putStrLn "Enter the email " >>  getLine >>= \email -> validateEmail email >>= \email ->
-    putStrLn "Enter the name " >> getLine >>= \fullname -> validateName fullname >>= \fullname ->
-      putStrLn "Enter the password " >> getLine >>= \password -> validatePassword password >>= \password ->
-        putStrLn "Enter the postalcode " >> getLine >>= \postalcode -> validatePostal postalcode >>= \postalcode ->
-              let nuser = MkUser{ userEmail = MkEmail email, userFullName = fullname, userPassword = password, userPostalCode = postalcode} 
+  putStrLn "Enter the email " >>  getLine >>= \email -> validateEmail email >>= \email1 ->
+    putStrLn "Enter the name " >> getLine >>= \fullname -> validateName fullname >>= \fullname1 ->
+      putStrLn "Enter the password " >> getLine >>= \password -> validatePassword password >>= \password1 ->
+        putStrLn "Enter the postalcode " >> getLine >>= \postalcode -> validatePostal postalcode >>= \postalcode1 ->
+              let nuser = MkUser{ userEmail = MkEmail email1, userFullName = fullname1, userPassword = password1, userPostalCode = postalcode1} 
                 in pure (replaceUserInDb nuser userDb)
 
 
