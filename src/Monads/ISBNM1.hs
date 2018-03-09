@@ -39,7 +39,7 @@ validateIsbn xs = (checkIsbn (changeToInt(removeHypen xs)) )
 split1 :: Char -> String -> [String]
 split1 del istring =
     case istring of
-        [] -> [""]
+        [] -> []
         (x:xs) -> if(x==del)
                     then "":(split1 del xs)
                   else (x:head (split1 del xs)) : tail (split1 del xs) 
