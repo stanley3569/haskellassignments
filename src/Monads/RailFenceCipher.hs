@@ -28,8 +28,8 @@ main =
 
     
 encode :: Int -> [a] -> [a]
-encode n xs = map (\x -> fst x)  (sortBy (comparing (\(x,y) -> y))  (zip xs repeat1) )
-                    where repeat1 = cycle ([1..n] ++ [n-1,n-2..2])
+encode n xs = map (\x -> fst x)  (sortBy (comparing (\(x,y) -> y))  (zip xs rails) )
+                    where rails = cycle ([1..n] ++ [n-1,n-2..2])
                         
 
 
