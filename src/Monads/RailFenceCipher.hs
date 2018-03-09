@@ -22,7 +22,7 @@ main =
                                                         Nothing -> putStrLn "Invalid no of rails" >> main  
                                                     
                                 Just 3 -> putStrLn "Exit"
-
+                                Just _ -> putStrLn "Invalid input" >> main
                                 Nothing -> main
 
 
