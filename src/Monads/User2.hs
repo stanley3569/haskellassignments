@@ -157,7 +157,7 @@ checkVerification xs =
                       
 ---------------
 
-
+{-}
 registerUser1 ::[User] -> IO [User]
 registerUser1  userDb =
   putStrLn "Enter the email " >>  getLine >>= \email -> (checkEmail (validateEmail email) )>>= \email1 ->
@@ -169,8 +169,35 @@ registerUser1  userDb =
           in case output of
                 Left err -> putStrLn err >> registerUser1 userDb
                 Right udb -> pure udb
+-}
+registerUser1 ::[User] -> IO [User]
+registerUser1  userDb = do
+      putStrLn "Enter the email "
+      email <- getLine
+      email1 <- (checkEmail (validateEmail email) )
+      putStrLn "Enter the name " 
+      name <- getLine
+      name1 <- (checkName (validateName name))
+      putStrLn "Enter the password " 
+      password <- getLine
+      password1 <- (checkPassword (validatePassword password))
+      putStrLn "Enter the postal code "
+      postalcode <- getLine
+      postalcode1 <-  (checkPostal(validatePostal postalcode))
+      let newuser = MkNewUser{nuserEmail = MkEmail email1, nuserFullName = name1, nuserPassword = password1, nuserPostalCode = postalcode1}
+          output =   (registerUser newuser userDb)
+      case output of
+                  Left err -> putStrLn err >> registerUser1 userDb
+                  Right udb -> pure udb
 
 
+
+
+
+
+
+
+{-}
 verifyUser1 :: [User] -> IO [User]
 verifyUser1 userDb =
   putStrLn "Enter the email " >> getLine >>= \email -> (checkEmail (validateEmail email) ) >>= \email1 ->
@@ -179,8 +206,21 @@ verifyUser1 userDb =
                 in case output of
                       Left err -> putStrLn err >> verifyUser1 userDb
                       Right udb ->pure udb
+-}
+verifyUser1 :: [User] -> IO [User]
+verifyUser1 userDb = do
+      putStrLn "Enter the email "
+      email <- getLine
+      email1 <- (checkEmail (validateEmail email) )
+      putStrLn "Enter the code " 
+      code <- getLine
+      code1 <- (checkVerification(validateVerificationCode code))
+      let output = (verifyUser (MkEmail email1) code1 userDb)
+      case output of
+            Left err -> putStrLn err >> verifyUser1 userDb
+            Right udb ->pure udb
 
-
+{-}
 deactivateUser1 :: [User] -> IO [User]
 deactivateUser1 userDb =
   putStrLn "Enter the email " >> getLine >>= \email -> (checkEmail (validateEmail email) )>>= \email1 ->
@@ -188,8 +228,23 @@ deactivateUser1 userDb =
             in case output of
                     Left err -> putStrLn err >> deactivateUser1 userDb
                     Right udb -> pure udb
+-}
+
+deactivateUser1 :: [User] -> IO [User]
+deactivateUser1 userDb = do
+          putStrLn "Enter the email "
+          email <- getLine
+          email1 <-  checkEmail (validateEmail email) 
+          let output = (deactivateUser (MkEmail email1) userDb)
+          case output of
+                  Left err -> putStrLn err >> deactivateUser1 userDb
+                  Right udb -> pure udb          
 
 
+
+
+
+{-}
 replaceUser1 :: [User] -> IO [User]
 replaceUser1 userDb =
   putStrLn "Enter the email " >>  getLine >>= \email -> (checkEmail (validateEmail email) ) >>= \email1 ->
@@ -198,7 +253,24 @@ replaceUser1 userDb =
         putStrLn "Enter the postalcode " >> getLine >>= \postalcode -> (checkPostal(validatePostal postalcode)) >>= \postalcode1 ->
               let nuser = MkUser{ userEmail = MkEmail email1, userFullName = fullname1, userPassword = password1, userPostalCode = postalcode1} 
                 in pure (replaceUserInDb nuser userDb)
+-}
 
+replaceUser1 :: [User] -> IO [User]
+replaceUser1 userDb = do
+        putStrLn "Enter the email "
+        email <- getLine
+        email1 <- (checkEmail (validateEmail email) )
+        putStrLn "Enter the name "
+        fullname <- getLine
+        fullname1 <-  (checkName (validateName fullname))
+        putStrLn "Enter the password "
+        password <- getLine
+        password1 <- (checkPassword (validatePassword password))
+        putStrLn "Enter the postalcode "
+        postalcode <- getLine
+        postalcode1 <- (checkPostal(validatePostal postalcode)) 
+        let nuser = MkUser{ userEmail = MkEmail email1, userFullName = fullname1, userPassword = password1, userPostalCode = postalcode1} 
+        pure (replaceUserInDb nuser userDb)
 
 
 countUser1 :: Applicative f => Status -> [User] -> f String
@@ -225,7 +297,7 @@ pad num xs = " " ++ xs ++(replicate (num-(length xs) ) ' ')
 
 
 
-
+{-}
 main1 :: [User] -> IO()
 main1 userDb = (putStrLn "\n 1. register user \n 2. replace user \n 3. deactivate user \n 4. verify user \n 5. display users \n") >>
                     getLine >>= \ choice ->
@@ -237,10 +309,20 @@ main1 userDb = (putStrLn "\n 1. register user \n 2. replace user \n 3. deactivat
                                  Just 5 -> display1 userDb                          
                                  _   -> main1 userDb
                                  
-
+-}
 
  
-
+main1 :: [User] -> IO()
+main1 userDb = do
+      putStrLn "\n 1. register user \n 2. replace user \n 3. deactivate user \n 4. verify user \n 5. display users \n"
+      choice <- getLine
+      case (readMaybe choice)::Maybe Int of
+        Just 1 -> registerUser1 userDb >>= (\(userdb)-> main1 userdb)
+        Just 2 -> replaceUser1 userDb >>= (\userdb -> main1 userdb)
+        Just 3 -> deactivateUser1 userDb  >>=  (\(userdb)->main1 userdb )
+        Just 4 -> verifyUser1 userDb >>= (\(userdb) -> main1 userdb)
+        Just 5 -> display1 userDb                          
+        _   -> main1 userDb
 
 
 
