@@ -212,15 +212,21 @@ countUser1 status usrDb =
 
 
 
-display1 :: (Applicative f, Foldable t) => t User -> f [Char]
+display1 :: [User] -> IO()
 display1 userDb =
   let display = foldl' (\arr MkUser{userEmail=MkEmail email,userFullName = name,userPassword = password,userPostalCode = postalcode,userStatus = status,userVerificationCode = verifycode} ->
-        arr++" "++email++" "++name++" "++password++" "++postalcode++" "++show status++" "++verifycode++ " | ") "" userDb
-  in pure display
+        arr++" "++pad 20 email++" | "++pad 20 name++" | "++pad 20 password++" | "++pad 20 postalcode++" | "++pad 20 (show status)++" | "++pad 20 verifycode++ " | " ++ "\n") [] userDb
+  in putStrLn display
+
+
+pad :: Int -> String -> String
+pad num xs = " " ++ xs ++(replicate (num-(length xs) ) ' ')
 
 
 
-main1 :: [User] -> IO [Char]
+
+
+main1 :: [User] -> IO()
 main1 userDb = (putStrLn "\n 1. register user \n 2. replace user \n 3. deactivate user \n 4. verify user \n 5. display users \n") >>
                     getLine >>= \ choice ->
                         case (readMaybe choice)::Maybe Int of
