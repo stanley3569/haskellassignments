@@ -1,20 +1,20 @@
 module NewConcepts2.GenExam1 where
 
 import Data.List as DL  
-import Data.Char
+--import Data.Char
 import Text.Read as TR
 import Data.List.Split as DS
 import Prelude 
 
 
 import Data.Vector as DV
-import Data.Text as DT
+--import Data.Text as DT
 import Data.Csv as DC
 --import Data.ByteString as BS
 import Data.ByteString.Lazy as BL
 import Data.ByteString.Char8 as DB
 import Data.String.Conv
-import Control.Applicative
+--import Control.Applicative
 
 validsubject :: [String]
 validsubject = ["English", "Geography", "Physics", "Chemistry", "Economics", "Computer Science"]
@@ -32,14 +32,14 @@ type Validate = (Bool,String)
 validateMarks :: InputScore -> [(String, [(String, Int, Bool, String)])]
 validateMarks score =
     let validmarks = DL.map (\(studentName,scorenames)->(studentName,             
-                        DL.concatMap(\(subjectname,marks) ->
-                            if (marks < 0)
-                                then [(subjectname,marks,False,"negative marks")]
-                            else if (marks > 100)
-                                then [(subjectname,marks,False,"marks higher than 100")]
+                        DL.concatMap(\(subjectname,marks1) ->
+                            if (marks1 < 0)
+                                then [(subjectname,marks1,False,"negative marks")]
+                            else if (marks1 > 100)
+                                then [(subjectname,marks1,False,"marks higher than 100")]
                             else if(subjectname `DL.elem` validsubject)
-                                then [(subjectname,marks,True,"valid Subject")]
-                            else [(subjectname,marks,False,"unknown Subject")]  ) scorenames )) score
+                                then [(subjectname,marks1,True,"valid Subject")]
+                            else [(subjectname,marks1,False,"unknown Subject")]  ) scorenames )) score
         in validmarks
 
 
@@ -60,7 +60,7 @@ validateMarksSubjects testfunc accumulator score vsubjects=
 type DuplicateStudentList =  [String] 
                                                                                         
 duplicateStudents :: InputScore -> ValidSubjects -> DuplicateStudentList
-duplicateStudents score vsubjects = 
+duplicateStudents score _ = 
     let studentnames = DL.map (\ x  ->  fst x ) score
         duplicatenames = DL.concatMap(\x -> if(DL.length x > 1) then [DL.head x] else [] ) (DL.group(DL.sort studentnames) )
                         --nub $ concat(filter(\x -> (length(x)>1 ))  (groupBy(\x y-> x==y) (sort(fst (unzip(score)))))) 
@@ -69,23 +69,23 @@ duplicateStudents score vsubjects =
 
 invalidScores :: InputScore -> ValidSubjects  -> [(StudentName,[(Subject,Marks,String)])]
 invalidScores score vsubjects =  
-        let invalidData3 = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->                         
-                                newlist DL.++ [(studentname, (DL.concatMap (\(subjectname,marks,validsubject,validmessage)->
-                                            if(validsubject==False)
-                                                then [(subjectname,marks,validmessage)]
+        let invalidData3 = validateMarksSubjects (\newlist (studentname,_,subjectinfo) ->                         
+                                newlist DL.++ [(studentname, (DL.concatMap (\(subjectname,marks1,validsubject1,validmessage)->
+                                            if(validsubject1==False)
+                                                then [(subjectname,marks1,validmessage)]
                                             else [] )) subjectinfo)] ) [] score vsubjects
             in invalidData3
 
 
 averageMarks :: InputScore -> Subject -> ValidSubjects -> Float
 averageMarks score subjectName vsubject =
-    let markslist = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                                newlist DL.++ (DL.concatMap (\(subjectname,marks,validsubject,validmessage)->
-                                    if(validstudent==True && subjectname==subjectName && validsubject == True)
-                                        then [marks]
+    let markslist = validateMarksSubjects (\newlist (_,validstudent,subjectinfo) ->
+                                newlist DL.++ (DL.concatMap (\(subjectname,marks1,validsubject1,_)->
+                                    if(validstudent==True && subjectname==subjectName && validsubject1 == True)
+                                        then [marks1]
                                     else [] )) subjectinfo 
                                 ) [] score vsubject
-        averageSubject =  ( fromIntegral( DL.sum( markslist) ) / fromIntegral(DL.length markslist))                                          
+        averageSubject =  ( fromIntegral( DL.sum(markslist) ) / fromIntegral(DL.length markslist))                                          
      in averageSubject
 
 
@@ -93,10 +93,10 @@ averageMarks score subjectName vsubject =
 standardDeviation :: InputScore -> Subject -> ValidSubjects -> Float
 standardDeviation score subjectName vsubject = 
     let averagevalue = averageMarks score subjectName vsubject                              
-        listsub = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                        newlist DL.++ (DL.concatMap (\(subjectname,marks,validsubject,validmessage)->
-                            if(validstudent==True && subjectname==subjectName && validsubject == True)
-                                then [marks]
+        listsub = validateMarksSubjects (\newlist (_,validstudent1,subjectinfo) ->
+                        newlist DL.++ (DL.concatMap (\(subjectname,marks1,validsubject1,validmessage)->
+                            if(validstudent1==True && subjectname==subjectName && validsubject1 == True)
+                                then [marks1]
                             else [] )) subjectinfo 
             ) [] score  vsubject
         calculateXM = ( DL.zipWith (\x y -> x-y)  listsub [round(averagevalue)..] )
@@ -115,9 +115,9 @@ validSubjectsStudentList = [("English", []),("Geography", []),("Physics", []),("
 
 studentsListForExam1 :: InputScore -> ValidSubjects -> [(Subject, [StudentName])]
 studentsListForExam1 score vsubject= 
-    let listsub =validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                        newlist DL.++ (DL.concatMap (\(subjectname,marks,validsubject,validmessage)->
-                            if(validstudent==True && validsubject == True)
+    let listsub =validateMarksSubjects (\newlist (studentname,validstudent1,subjectinfo) ->
+                        newlist DL.++ (DL.concatMap (\(subjectname,_,validsubject1,_)->
+                            if(validstudent1==True && validsubject1 == True)
                                 then [(subjectname,studentname)]
                             else [] )) subjectinfo 
             ) [] score vsubject
@@ -135,10 +135,10 @@ studentsListForExam1 score vsubject=
 
 grouping :: InputScore -> ValidSubjects -> [([Subject], [StudentName])]
 grouping score vsubjects = 
-    let listofstudent = validateMarksSubjects (\newlist (studentname,validstudent,subjectinfo) ->
-                        if(validstudent==True)
-                            then newlist DL.++ [(studentname,DL.concatMap(\(subjectname,marks,validsubject,validmessage) -> 
-                                    if validsubject
+    let listofstudent = validateMarksSubjects (\newlist (studentname,validstudent1,subjectinfo) ->
+                        if(validstudent1==True)
+                            then newlist DL.++ [(studentname,DL.concatMap(\(subjectname,_,validsubject1,_) -> 
+                                    if validsubject1
                                         then [subjectname]
                                     else []
                                     ) subjectinfo)]
@@ -274,23 +274,23 @@ formatScore scoreString =
 
 
 
-valuesToList :: Result -> [String]
-valuesToList (Result name subject marks) = [name,subject,marks]
+--valuesToList :: Result -> [String]
+valuesToList (Result name1 subject1 marks1) = [name1,subject1,marks1]
 
 
 
 function1:: [[String]] -> (String, [(String, Int)]) -> Either String (String, [(String, Int)])
-function1 records (name,score1) =
+function1 records (name1,score1) =
     if(records == [])
-        then Right (name,score1)
+        then Right (name1,score1)
     else case (DL.head records) of
             ([]:_:_:[]) -> Left "Invalid name"
             (_:[]:_:[]) -> Left "Invalid subject"
             (_:_:[]:[]) -> Left "Invalid marks"
             (sname:ssubject:smarks:[]) -> case ((readMaybe smarks) :: Maybe Int) of
-                                                Just mark1 -> if name==sname
-                                                                then function1 (DL.tail records) (sname,score1 DL.++ [(ssubject,mark1)])
-                                                               else function1 (DL.tail records) (name,score1 DL.++ [(ssubject,mark1)])
+                                                Just mark1 -> if name1==""
+                                                                then function1 (DL.tail records) (sname, [(ssubject,mark1)])
+                                                               else function1 (DL.tail records) (name1,score1 DL.++ [(ssubject,mark1)])
                                                 Nothing -> Left "invalid marks"
             _ -> Left "Invalid"
 

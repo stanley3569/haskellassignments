@@ -1,4 +1,4 @@
-module NewConcepts2.GenExam2 where
+module NewConcepts2.GenExam where
 import Data.List as DL  
 import Data.Char
 import Text.Read as TR
@@ -176,7 +176,8 @@ forDuplicates score vsubject = Prelude.putStrLn (DL.foldl' (\arr name -> arr DL.
 
 forAverage :: Score -> ValidSubjects -> IO()
 forAverage score vsubject=
-    Prelude.putStrLn "Enter the subject name" >> Prelude.getLine >>= \subjectname -> if(subjectname `DL.elem` vsubject )
+    Prelude.putStrLn "Enter the subject name" >> Prelude.getLine >>= \subjectname -> 
+                                                                    if(subjectname `DL.elem` vsubject )
                                                                         then print (averageMarks score subjectname vsubject)
                                                                      else Prelude.putStrLn "Invalid SubjectName" >> forAverage score vsubject
 
@@ -193,13 +194,20 @@ forInvalidScores score vsubject = Prelude.putStrLn (DL.foldl' (\arr1 (student,va
                     [] validation ) [] (invalidScores score vsubject) )
 
 
-
+{-}
 forStudentsListForExam1 :: Score -> ValidSubjects -> IO()
 forStudentsListForExam1 score vsubject = 
     Prelude.putStrLn (DL.foldl' (\arr1 (subjectname,list)-> arr1 DL.++ "\n" DL.++ pad 20 subjectname DL.++ " | " DL.++ 
-            DL.foldl' (\arr2 (student)-> arr2 DL.++ pad 20 student DL.++ " ") [] list )
-                     [] (studentsListForExam1 score vsubject))
+            DL.foldl' (\arr2 (student)-> arr2 DL.++ pad 20 student DL.++ " ") "" list )
+                     "" (studentsListForExam1 score vsubject))
+-}
 
+forStudentsListForExam1 :: Score -> ValidSubjects -> IO()
+forStudentsListForExam1 score vsubject = Prelude.putStrLn (DL.foldl' (\opstr (sname,list)-> 
+        opstr Prelude.++ "\n" Prelude.++ sname Prelude.++ " | " Prelude.++ DL.foldl' (\str (studname)-> 
+            str Prelude.++ studname Prelude.++ " ") "" list
+        ) "" (studentsListForExam1 score vsubject))
+                  
 ----------------------------------------
 
 
@@ -224,7 +232,7 @@ main1 myscorefile mysubjectfile = do
     Prelude.putStrLn "Enter \n 1. Average \n 2. Duplicate \n 3. Std Deviation \n 4. Invalid scores \n 5. Students for exam \n 6. Exit"
     choice <- Prelude.getLine 
     let fscore =  scoreRecord1 (myscorefile)
-        fsubject =  formatSubjects (DB.unpack mysubjectfile)
+        fsubject =  formatSubjects (toS mysubjectfile)
     case fscore of
         Right fscore1 -> 
                         case ((readMaybe choice)::Maybe Int) of
@@ -305,8 +313,8 @@ function1 records (name,score1) =
             (_:[]:_:[]) -> Left "Invalid subject"
             (_:_:[]:[]) -> Left "Invalid marks"
             (sname:ssubject:smarks:[]) -> case ((readMaybe smarks) :: Maybe Int) of
-                                                Just mark1 -> if name==sname
-                                                                then function1 (DL.tail records) (sname,score1 DL.++ [(ssubject,mark1)])
-                                                               else function1 (DL.tail records) (name,score1 DL.++ [(ssubject,mark1)])
+                                                Just mark1 -> if name==""
+                                                                then function1 (DL.tail records) (sname,[(ssubject,mark1::Int )])
+                                                               else function1 (DL.tail records) (name,score1 DL.++ [(ssubject,mark1 ::Int)])
                                                 Nothing -> Left "invalid marks"
             _ -> Left "Invalid"
