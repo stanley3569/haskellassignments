@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Lens.User where
+module Lens.User1 where
 
 import Data.List 
 import Text.Read
@@ -40,14 +40,14 @@ registerUser newUser@MkNewUser{_nuserEmail=(MkEmail email)} userDb =
               , _userVerificationCode = (take 2 email) ++ (take 2 (_nuserFullName newUser)) ++ (take 2 (_nuserPostalCode newUser))
               }
              
-        existingUser = Data.List.filter (\u -> (_userEmail u) == ((\x -> (_userEmail x)) user) ) userDb
+        existingUser = Data.List.filter (\u -> (u^. userEmail) == ((\x -> (x^. userEmail)) user) ) userDb
   in if(Data.List.null existingUser )
         then Right (user:userDb)
       else Left "--Username already exists-- Re-enter the value" --userDb
 
 verifyUser :: Email -> String -> [User] -> Either String [User]
 verifyUser e code userDb =
-  let existingUsers = Data.List.filter (\u -> (_userEmail u) == e) userDb
+  let existingUsers = Data.List.filter (\u -> (u^. userEmail) == e) userDb
   in  if (Data.List.null existingUsers)
         then Left "No user exists in the db"   --(False, "No such user", userDb)
         else  let existingUser = head existingUsers
@@ -59,7 +59,7 @@ verifyUser e code userDb =
 
 deactivateUser :: Email -> [User] -> Either String  [User]
 deactivateUser e userDb =
-  let existingUsers = Data.List.filter (\u -> (_userEmail u) == e) userDb
+  let existingUsers = Data.List.filter (\u -> (u^. userEmail) == e) userDb
   in  if (Data.List.null existingUsers)
         then Left "--User doesnt exist--"         --(False, "No such user", userDb)
         else  let existingUser = head existingUsers
@@ -68,14 +68,14 @@ deactivateUser e userDb =
 
 replaceUserInDb :: User -> [User] -> [User]
 replaceUserInDb u userDb =
-  let (a, b) = Data.List.break (\x -> (_userEmail x)==(_userEmail u)) userDb
+  let (a, b) = Data.List.break (\x -> (x^. userEmail)==(u^. userEmail)) userDb
   in if (Data.List.null b) 
       then  (a ++ [u])
       else  (a ++ (u:(tail b)))
 
      
 countUsers :: Status -> [User] -> Int
-countUsers status userDb = length (filter (\u -> (_userStatus u) == status) userDb)
+countUsers status userDb = length (filter (\u -> (u^. userStatus) == status) userDb)
 
 
 userStatusSummary :: [User] -> [(Status, Int)]
