@@ -1,0 +1,6 @@
+student1,English,75
+student1,Geography,55
+sam,English,75
+student2,English,75
+student3,EEnglish,88
+sam,Geography,66
