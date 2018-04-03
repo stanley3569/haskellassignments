@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
-module TwitterBot2 where                                                     
+module TwitterBot3 where                                                     
 
 import Network.Wreq
 import Control.Lens as CL -- hiding (id)
@@ -150,4 +150,30 @@ postRetweet tweetId = do
                                         then pure (arr++[val ^. responseStatus])  
                                     else pure (arr)              
                     Left _ -> pure (arr) ) [] tweetId )
+
+
+
+
+
+
+
+
+
+
+
+
+{-}
+postRetweet1 tweetId = do
+    (CM.foldM (\arr tid ->  (  (try (postWith authenticate (retweetUrl) [partString (tid)]  ) ):: IO (Either SomeException (Response BL.ByteString)) ) >>= 
+         \sc ->
+                case sc of
+                    Right val ->   if (val ^. responseStatus ^. statusCode)==200
+                                        then pure (arr++[val ^. responseStatus])  
+                                    else pure (arr)              
+                    Left _ -> pure (arr) ) [] tweetId )
+-}
+
+
+
+
 
