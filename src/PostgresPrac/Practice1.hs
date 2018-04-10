@@ -12,7 +12,7 @@ import GHC.Int
 
 data Customer = Customer {
     title ::  String,
-    email :: String
+    email :: String 
     } deriving (Show)
 
 
