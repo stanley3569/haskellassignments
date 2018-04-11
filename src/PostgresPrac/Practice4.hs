@@ -55,10 +55,8 @@ instance ToRow Customer where
 getDetails :: IO Customer
 getDetails = do
     putStrLn "Enter the id"
-    idGet1 <- getLine
-    idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
-                    Just x -> pure x
-                    Nothing ->  pure 0
+    idGet <- getLine
+
 
     putStrLn "Enter thee customer ref"
     customerRefGet<- getLine
@@ -76,17 +74,11 @@ getDetails = do
     phoneGet <- getLine
 
     putStrLn "Enter the client id"
-    clientIdGet1 <- getLine
-    clientIdGet <- case (readMaybe clientIdGet1) :: (Maybe Integer) of
-                        Just x -> pure x
-                        Nothing ->  pure 0
-
+    clientIdGet <- getLine
 
     putStrLn "Enter the number of booking"
-    noOfBookingGet1 <- getLine
-    noOfBookingGet <- case (readMaybe noOfBookingGet1) :: (Maybe Integer) of
-        Just x -> pure x
-        Nothing ->  pure 0
+    noOfBookingGet <- getLine
+
 
     putStrLn "Enter the last booking created at"
     lastBookingGet <- getLine
@@ -97,11 +89,10 @@ getDetails = do
     putStrLn "Enter the updated at"
     updatedAtGet <- getLine
 
-    pure $ Customer {custId=(idGet :: Integer) ,custCustomerRef=customerRefGet,custTitle=titleGet,custFullName=fullnameGet,custEmail=emailGet,custPhone=phoneGet,custClientId= ( clientIdGet :: Integer),custNumberOfBookings=(noOfBookingGet :: Integer),custLastBookingCreatedAt= (read lastBookingGet :: LocalTime)  , custCreatedAt=(read createdAtGet:: LocalTime),custUpdatedAt=(read updatedAtGet :: LocalTime)}
 
-
-
-
+    case (readMaybe idGet :: Maybe Integer,readMaybe clientIdGet :: Maybe Integer,readMaybe noOfBookingGet :: Maybe Integer)of
+            (Just idGet2,Just clientIdGet2, Just noOfBookingGet2) -> pure $ Customer {custId=(idGet2 :: Integer) ,custCustomerRef=customerRefGet,custTitle=titleGet,custFullName=fullnameGet,custEmail=emailGet,custPhone=phoneGet,custClientId= ( clientIdGet2 :: Integer),custNumberOfBookings=(noOfBookingGet2 :: Integer),custLastBookingCreatedAt= (read lastBookingGet :: LocalTime)  , custCreatedAt=(read createdAtGet:: LocalTime),custUpdatedAt=(read updatedAtGet :: LocalTime)}
+            _ -> error "invalid data"
 
 
 
