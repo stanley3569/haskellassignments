@@ -68,7 +68,7 @@ getDetails = do
     fullnameGet <- getLine
 
     putStrLn "Enter the email"
-    emailGet <- getLine
+    emailGet <- getLine 
 
     putStrLn "Enter the phone"
     phoneGet <- getLine
