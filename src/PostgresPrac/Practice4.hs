@@ -6,7 +6,6 @@ module Practice4 where
 
 import Database.PostgreSQL.Simple
 import Text.Read
---import Data.Text as DT
 import Control.Monad
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.ToRow
@@ -14,8 +13,11 @@ import Database.PostgreSQL.Simple.ToField
 import GHC.Int
 import Prelude hiding (id)
 import Data.Time.LocalTime
---import Data.List as DL
---import Data.String.Conv
+import Data.List as DL
+import Control.Monad.IO.Class
+import Control.Monad.Trans.Reader
+
+
 
 data Customer = Customer {
     custId :: Integer,
@@ -108,103 +110,100 @@ selectQuery1 conn = do
     print =<< ( query_ conn "select * from customers"  :: IO [Customer])
 
 
-selectQuery2 :: Connection -> IO ()
-selectQuery2 conn = do
-    xs <- ( query_ conn "select title from customers"  :: IO [(String)])
-    forM_ xs $ \(title1) -> putStrLn $ (title1) 
+selectQuery2 :: ReaderT Connection IO() 
+selectQuery2 = do
+    conn <- ask
+    xs <- liftIO $  query_ conn "select id,title from customers"  :: ReaderT Connection  IO [(Integer,String)]
+    x <- pure $ forM_ xs $ \(id1,title1) -> putStrLn $ (title1 ++ " "++  (show id1) )
+    liftIO x
 
 
 
-
-
-insertQuery1 :: Connection -> IO ()
-insertQuery1 conn = do
-    customerData <- getDetails
-    result <- execute conn "INSERT INTO customers (id,customer_ref,title,full_name,email,phone,client_id,number_of_bookings,last_booking_created_at,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)"  customerData
+insertQuery1 :: ReaderT Connection IO () 
+insertQuery1 = do
+    conn <- ask
+    customerData <- liftIO $ getDetails
+    result <- liftIO $ execute conn "INSERT INTO customers (id,customer_ref,title,full_name,email,phone,client_id,number_of_bookings,last_booking_created_at,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)"  customerData
     if (result > 0)
-        then putStrLn " Successfully executed the query "
+        then liftIO $ putStrLn " Successfully executed the query "
     else 
-        putStrLn " Failed: No rows deleted "
+        liftIO $ putStrLn " Failed: No rows deleted "
 
 
 
-
-
-
-
-
-updateQuery1 :: Connection -> IO ()
-updateQuery1 conn= do
-
-    putStrLn "Enter the number of booking to be set for the update"
-    noOfBookingGet1 <- getLine
+updateQuery1 :: ReaderT (Connection) IO () 
+updateQuery1 = do
+    conn <- ask
+    liftIO $ putStrLn "Enter the number of booking to be set for the update"
+    noOfBookingGet1 <- liftIO $ getLine
     noOfBookingGet <- case (readMaybe noOfBookingGet1) :: (Maybe Integer) of
         Just x -> pure x
         Nothing ->  error "invalid data"    
 
 
-    putStrLn "Enter the id of the record which is being updated"
-    idGet1 <- getLine
+    liftIO $ putStrLn "Enter the id of the record which is being updated"
+    idGet1 <- liftIO $ getLine
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
         Just x -> pure x
         Nothing ->  error "invalid data"  
 
-    result <- execute conn "update customers SET number_of_bookings=upd.x from (VALUES (?,?)) as upd(x,y) where id=upd.y" ((noOfBookingGet::Integer),(idGet::Integer))
+    result <- liftIO $ execute conn "update customers SET number_of_bookings=upd.x from (VALUES (?,?)) as upd(x,y) where id=upd.y" ((noOfBookingGet::Integer),(idGet::Integer))
 
     if (result > 0)
-        then putStrLn " Successfully executed the query "
+        then liftIO $ putStrLn " Successfully executed the query "
     else 
-        putStrLn " Failed: No rows deleted "
+        liftIO $ putStrLn " Failed: No rows deleted "
 
 
 
 
 
-updateQuery2 :: Connection -> IO ()
-updateQuery2 conn = do
+updateQuery2 :: ReaderT (Connection) IO () 
+updateQuery2 = do
+    conn <- ask
+    liftIO $ putStrLn "Enter the customer ref to be set for the update"
+    customerRefGet<- liftIO $ getLine
 
-    putStrLn "Enter the customer ref to be set for the update"
-    customerRefGet<- getLine
+    liftIO $ putStrLn "Enter the title to be set for the update"
+    titleGet <- liftIO $ getLine
 
-    putStrLn "Enter the title to be set for the update"
-    titleGet <- getLine
-
-    putStrLn "Enter the number of booking to be set for the update"
-    noOfBookingGet1 <- getLine
+    liftIO $ putStrLn "Enter the number of booking to be set for the update"
+    noOfBookingGet1 <- liftIO $ getLine
     noOfBookingGet <- case (readMaybe noOfBookingGet1) :: (Maybe Integer) of
         Just x -> pure x
         Nothing ->  error "invalid data"   
 
 
-    putStrLn "Enter the id of the record which is being updated"
-    idGet1 <- getLine
+    liftIO $ putStrLn "Enter the id of the record which is being updated"
+    idGet1 <- liftIO $ getLine
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
         Just x -> pure x
         Nothing ->  error "invalid data"  
 
-    result <- execute conn "update customers SET customer_ref=upd.a, title=upd.b, number_of_bookings=upd.x from (VALUES (?,?,?,?)) as upd(a,b,x,y) where id=upd.y" (customerRefGet,titleGet, (noOfBookingGet::Integer),(idGet:: Integer))
+    result <- liftIO $ execute conn "update customers SET customer_ref=upd.a, title=upd.b, number_of_bookings=upd.x from (VALUES (?,?,?,?)) as upd(a,b,x,y) where id=upd.y" (customerRefGet,titleGet, (noOfBookingGet::Integer),(idGet:: Integer))
 
     if (result > 0)
-        then putStrLn " Successfully executed the query "
+        then liftIO $ putStrLn " Successfully executed the query "
     else 
-        putStrLn " Failed: No rows deleted "
+        liftIO $ putStrLn " Failed: No rows deleted "
 
 
 
-deleteQuery1 :: Connection -> IO ()
-deleteQuery1 conn= do
-    putStrLn " Enter the id to be deleted"
-    idGet1 <- getLine
+deleteQuery1 :: ReaderT (Connection) IO () 
+deleteQuery1 = do
+    conn <- ask
+    liftIO $ putStrLn " Enter the id to be deleted"
+    idGet1 <- liftIO $ getLine
 
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
                 Just x -> pure x
                 Nothing ->  error "invalid data"  
 
-    result <- execute conn "delete from customers where id= (?) " [((idGet)::Integer)]
+    result <- liftIO $ execute conn "delete from customers where id= (?) " [((idGet)::Integer)]
     if (result > 0)
-        then putStrLn " Successfully executed the query "
+        then liftIO $ putStrLn " Successfully executed the query "
     else 
-        putStrLn " Failed: No rows deleted "
+        liftIO $ putStrLn " Failed: No rows deleted "
 
 
 
@@ -217,11 +216,11 @@ main = do
     putStrLn "Enter  \n 1. Insert Query \n 2. Update Query (for one value) \n 3. Delete Query \n 4. Update (for 3 values) \n 5. Select Query \n 6. Exit"
     choice <- getLine
     case ((readMaybe choice)::Maybe Int) of
-        Just 1 -> insertQuery1 conn >> main
-        Just 2 -> updateQuery1 conn >> main
-        Just 3 -> deleteQuery1 conn >> main
-        Just 4 -> updateQuery2 conn >> main
-        Just 5 -> selectQuery2 conn >> main
+        Just 1 -> runReaderT insertQuery1 conn >> main
+        Just 2 -> runReaderT updateQuery1 conn >> main
+        Just 3 -> runReaderT deleteQuery1 conn >> main
+        Just 4 -> runReaderT updateQuery2 conn >> main
+        Just 5 -> runReaderT selectQuery2 conn >> main
         Just 6 -> putStrLn "Exit"
         _ -> main
 
