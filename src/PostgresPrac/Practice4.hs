@@ -140,14 +140,14 @@ updateQuery1 conn= do
     noOfBookingGet1 <- getLine
     noOfBookingGet <- case (readMaybe noOfBookingGet1) :: (Maybe Integer) of
         Just x -> pure x
-        Nothing ->  pure 0    
+        Nothing ->  error "invalid data"    
 
 
     putStrLn "Enter the id of the record which is being updated"
     idGet1 <- getLine
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
         Just x -> pure x
-        Nothing ->  pure 0
+        Nothing ->  error "invalid data"  
 
     result <- execute conn "update customers SET number_of_bookings=upd.x from (VALUES (?,?)) as upd(x,y) where id=upd.y" ((noOfBookingGet::Integer),(idGet::Integer))
 
@@ -173,14 +173,14 @@ updateQuery2 conn = do
     noOfBookingGet1 <- getLine
     noOfBookingGet <- case (readMaybe noOfBookingGet1) :: (Maybe Integer) of
         Just x -> pure x
-        Nothing ->  pure 0    
+        Nothing ->  error "invalid data"   
 
 
     putStrLn "Enter the id of the record which is being updated"
     idGet1 <- getLine
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
         Just x -> pure x
-        Nothing ->  pure 0
+        Nothing ->  error "invalid data"  
 
     result <- execute conn "update customers SET customer_ref=upd.a, title=upd.b, number_of_bookings=upd.x from (VALUES (?,?,?,?)) as upd(a,b,x,y) where id=upd.y" (customerRefGet,titleGet, (noOfBookingGet::Integer),(idGet:: Integer))
 
@@ -198,7 +198,7 @@ deleteQuery1 conn= do
 
     idGet <- case (readMaybe idGet1) :: (Maybe Integer) of
                 Just x -> pure x
-                Nothing ->  pure 0
+                Nothing ->  error "invalid data"  
 
     result <- execute conn "delete from customers where id= (?) " [((idGet)::Integer)]
     if (result > 0)
