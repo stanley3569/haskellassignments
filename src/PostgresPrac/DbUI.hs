@@ -231,7 +231,7 @@ updateQuery2 = do
     else 
         liftIO $ putStrLn " Failed: No rows deleted "
 
-
+ 
 
 deleteQuery1 :: ReaderT (Connection) IO () 
 deleteQuery1 = do
