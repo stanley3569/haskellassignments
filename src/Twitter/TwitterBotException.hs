@@ -21,6 +21,7 @@ import Control.Monad as CM
 authenticate :: Options
 authenticate  =  
     let auth1 = oauth1Auth (DB.pack "mqC2gEAkGVxVjZJ9Drn5k08A7") (DB.pack  "oj6gKUWjFwLVo9UVUzvayFvfmf4vVbpu7RV0K4ZUTXAoz8v5GY") (DB.pack "976346669745778688-BIIdmsBNd4BUKkLG3LlCwt1AfOHwWyH") (DB.pack "1Btf70miGr2eg7JsAKmji1QLECDeIhwWNvjwGu869YmX3")
+        --opts = defaults & header "Accept" .~ ["application/json"]
      in defaults & auth ?~ (auth1)
 
 -----------------------------------------
@@ -154,3 +155,38 @@ postRetweet tweetId = do
 
 
 
+
+{-}
+--postRetweet1 :: IO [TweetIdStr] -> IO [Status]
+postRetweet1 tweetId = do
+    tweetId >>= \tweetId1 -> (CM.foldM (\arr tid ->  ((try (postWith authenticate (retweetUrl++tid++".json") (DB.pack "ABC")) ):: IO (Either SomeException (Response BL.ByteString)) ) >>= 
+         \sc ->
+                case sc of
+                    Right val ->   if (val ^. responseStatus ^. statusCode)==200
+                                        then pure (arr++[val ^. responseBody . key "text" .])  
+                                    else pure (arr)              
+                    Left x -> pure (arr) ) [] tweetId1 )
+-}
+
+
+{-}
+postRetweet :: IO [TweetIdStr] -> IO [Status]
+postRetweet tweetId = do
+    let response1 = tweetId >>= \tweetId1 -> mapM (\tid -> (postWith authenticate (retweetUrl++tid++".json") (DB.pack "ABC"))  ) tweetId1
+    response1 >>= \rid -> (mapM (\x -> pure (x^. responseStatus) ) rid)
+   -} 
+
+{- working
+postRetweet :: IO [TweetIdStr] -> IO [Status]
+postRetweet tweetId = do
+    tweetId >>= \tweetId1 -> (CM.foldM (\arr tid ->  ((try (postWith authenticate (retweetUrl++tid++".json") (DB.pack "ABC")) ):: IO (Either SomeException (Response BL.ByteString)) ) >>= 
+         \sc ->
+                case sc of
+                    Right val ->   if (val ^. responseStatus ^. statusCode)==200
+                                        then pure (arr++[val ^. responseStatus])  
+                                    else pure (arr)              
+                    Left x -> pure (arr) ) [] tweetId1 )
+
+
+
+-}
