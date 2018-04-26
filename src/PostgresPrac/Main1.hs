@@ -138,10 +138,11 @@ type API =  "index" :> PageAPI
             :<|> "delete" :> ReqBody '[FormUrlEncoded] DeleteCustomer :> Post '[HTML] (String)
             :<|> "index" :> "updateCust" :> UpdateAPI
             :<|> "update" :> ReqBody '[FormUrlEncoded] UpdateCustomer :> Post '[HTML] (String)
+            :<|> "index" :> "displayCust" :> DisplayAPI
 
            
 server :: Server API
-server = pageServer :<|> insertServer :<|> customerInsert :<|> deleteServer :<|> customerDelete  :<|> updateServer :<|> customerUpdate          
+server = pageServer :<|> insertServer :<|> customerInsert :<|> deleteServer :<|> customerDelete  :<|> updateServer :<|> customerUpdate  :<|> customerDisplay        
 
 customerInsert :: Customer -> Handler (String)
 customerInsert cust = do
@@ -184,7 +185,7 @@ app = serve api server
 
 main :: IO ()
 main = run 8080 app
----------------------------------------------Query--------------------------------------
+-------------------------------------------------ConnectionToDatabase---------------------------------------------------------------
 
 connection :: IO Connection
 connection = 
@@ -226,7 +227,7 @@ page =
 
 
 
-----------------insert--------------
+--------------------------------------------------------------insert---------------------------------------------------------
 
 type InsertAPI = Get '[HTML] (Html())
 
@@ -296,7 +297,7 @@ insertQueryUI =
 
                                 )     ) ) 
 
-------------------update----------------
+---------------------------------------------------------update---------------------------------------------------------
 
 type UpdateAPI = Get '[HTML] (Html())
 
@@ -327,7 +328,7 @@ updateQueryUI =
                             
                                                             )     ) ) 
  
--------------------delete---------------
+----------------------------------------------------------------delete---------------------------------------------------
 
 type DeleteAPI = Get '[HTML] (Html())
 
@@ -354,12 +355,12 @@ deleteQueryUI =
                                                                 )     ) ) 
 
 
--------------------display---------------
-{-}
+----------------------------------------------------display-------------------------------------------------------------
+
 type DisplayAPI = Get '[HTML] (Html())
 
 displayServer :: Server DisplayAPI
-displayServer = return displayQueryUI
+displayServer = customerDisplay 
 
 
 displayQueryUI :: [(Integer, String)] -> Html()
@@ -376,10 +377,19 @@ displayQueryUI queryResult = do
                                     mapM_ (\(x,y) ->tr_ $ do td_ (toHtml (show x) ) 
                                                              td_ (toHtml y)   ) ( queryResult)  ) )   ))
 
-
+customerDisplay :: Handler (Html())
 customerDisplay = do
-    conn <- CM.liftIO $ connection
+    conn <- CM.liftIO $ connection  
     xs <- CM.liftIO $  query_ conn "select id,title from customers" 
-    x <- pure $ mapM_ (\(id1,title1) -> putStrLn $ (title1 ++ " "++  (show id1) ) ) xs
-    CM.liftIO x
--}
+    pure $ displayQueryUI (xs)
+
+
+
+
+    {-
+ customerPg :: Html()
+customerPg = CM.liftIO (fmap (\c -> customerPage c) (getCustomers))   
+    
+
+getCustomers :: Control.Monad.IO.Class.MonadIO m => m [Customer]
+    -}
