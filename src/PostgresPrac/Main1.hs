@@ -326,7 +326,7 @@ updateQueryUI =
                             input_ [type_ "submit",name_ "Submit",value_ "Submit"]
                             
                                                             )     ) ) 
-
+ 
 -------------------delete---------------
 
 type DeleteAPI = Get '[HTML] (Html())
